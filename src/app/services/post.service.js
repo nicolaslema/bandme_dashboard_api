@@ -66,6 +66,28 @@ class PostService {
     }
 
 
+    async likePost(id, creator){
+        if(!mongoose.Types.ObjectId.isValid(id)) return `No post with id: ${id}`;
+
+        try {
+            const post = await postModel.findById(id);
+            
+            const index = post.likes.findByIndex((id) => id === String(creator))
+
+            if(index === -1){
+                post.likes.push(creator)
+            }else{
+                post.likes = post.likes.filter((id)=> id !== String(creator));
+            }
+            const updatedPost = await postModel.findByIdAndUpdate(id, post, {new: true})
+            return updatedPost;
+        } catch (error) {
+            console.error(error);
+        }
+
+    }
+
+
 
 }
 module.exports = new PostService();

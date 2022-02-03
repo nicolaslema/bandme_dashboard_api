@@ -57,8 +57,26 @@ const deletePost = async(req, res = response)=>{
     }
 }
 
+const likePost = async(req, res = resposne)=>{
+    const {id} = req.query;
+    const {creator} = req.body;
+
+    if(!creator){
+        return res.json({message: "Authenticate to like a post"})
+    }
+    
+    const likedPost = await postService.likePost(id, creator);
+
+    try {
+        res.status(200).json({likedPost});
+        
+    } catch (error) {
+        console.error(error);
+    }
+}
 
 
 
 
-module.exports = {getPosts, createPost, getPost, updatePost,deletePost}
+
+module.exports = {getPosts, createPost, getPost, updatePost,deletePost, likePost}
