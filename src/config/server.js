@@ -25,7 +25,7 @@ class Server{
     initMiddlewares(){
         this.app.use(cors());
         this.app.use(express.json());
-        this.app.use(express.urlencoded({extended: true}));
+        this.app.use(express.urlencoded({limit:'30mb', extended: true}));
         this.app.use(helmet());
         
     }

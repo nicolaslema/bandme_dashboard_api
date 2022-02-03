@@ -10,12 +10,11 @@ const PostSchema = Schema({
     message: { 
         type: String,
         reqired:[true, 'Message is required'],
-        unique: true
+        
 },
     creator: { 
         type: String,
-        reqired:[true, 'Creator is required'],
-        unique: true
+        
 },
 
     likes: { 
@@ -25,10 +24,14 @@ const PostSchema = Schema({
 },
     selectedFile: { 
         type: String,
+        default: ''
         
         
 },
-
+    createdAt: {
+        type: Date,
+        default: new Date()
+    },
 
 })
 
