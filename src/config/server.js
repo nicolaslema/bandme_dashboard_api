@@ -30,7 +30,7 @@ class Server{
     }
 
     routes(){
-        this.app.use(this.rootPath, require('../api/components/index/index.routes'));
+        //this.app.use(this.rootPath, require('../api/components/index/index.routes'));
     }
 
 
