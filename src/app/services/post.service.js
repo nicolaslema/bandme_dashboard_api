@@ -87,6 +87,15 @@ class PostService {
 
     }
 
+//para dashboard , crear una lista de 10 posteos y 10 posteos premium.
+//sortearlo por fecha de creacion
+//mostrar en dashboard feed. 
+//Agregar paginacion
+//Agregar diferenciacion de posteos [banda, artista, establecimiento]
+//
+//Agregar campo bool PREMIUM al modelo de usuario.
+
+
 
 
 }

@@ -27,6 +27,7 @@ const getPost = async(req,res = response)=>{
 const createPost = async(req, res = resposne)=>{
     //TODO: capturar ID de usuario para asignar creador al post
     const {title, message, selectedFile, userId } = req.body;
+    //ID DEL USUARIO CREADOR DEL POST
     const creator = userId;
     const createdPost = await postService.createPost(title, message, selectedFile, creator)
     try {
