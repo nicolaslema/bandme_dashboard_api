@@ -8,8 +8,8 @@ const router = express.Router();
 router.get('/', getPosts);
 router.get('/postById', getPost);
 router.post('/createPost', createPost);
-router.patch('/updatePost:id', updatePost);
-router.delete('/deletePost:id',deletePost);
+router.patch('/updatePost', updatePost);
+router.delete('/deletePost',deletePost);
 router.patch('/:id/likePost', likePost);
 
 

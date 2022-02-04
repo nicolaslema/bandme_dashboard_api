@@ -59,6 +59,7 @@ const deletePost = async(req, res = response)=>{
 
 const likePost = async(req, res = resposne)=>{
     const {id} = req.query;
+    //ID DEL USUARIO
     const {creator} = req.body;
 
     if(!creator){
