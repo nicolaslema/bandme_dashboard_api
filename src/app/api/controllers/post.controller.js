@@ -1,4 +1,5 @@
 const {response} = require('express');
+const Api404Error = require('../../helpers/httpErrors/api404Error');
 const postService = require('../../services/post.service');
 const PostService = require('../../services/post.service')
 
@@ -79,6 +80,19 @@ const likePost = async(req, res = resposne)=>{
 
 
 
+const testErrors = async(req, res = response, next) =>{
+    try {
+        let data = await postService.testError();
+        res.status(200).json({message: data});
+    } catch (error) {
+        const message = error instanceof Api404Error ? error.message : 'Error en el TestError endpoint';
+        res.status(error.statusCode).json({error, message: message});
+        next(error);
+        
+    }
+}
 
 
-module.exports = {getPosts, createPost, getPost, updatePost,deletePost, likePost}
+
+
+module.exports = {getPosts, createPost, getPost, updatePost,deletePost, likePost, testErrors}

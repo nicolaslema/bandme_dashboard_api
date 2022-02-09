@@ -2,6 +2,8 @@ const postModel = require('../models/post.model');
 const Post = require('../models/post.model');
 const mongoose = require('mongoose');
 const res = require('express/lib/response');
+const Api404Error = require('../helpers/httpErrors/api404Error');
+
 
 
 class PostService {
@@ -84,6 +86,20 @@ class PostService {
         } catch (error) {
             console.error(error);
         }
+
+    }
+
+
+    async testError(){
+        const isValid = true;
+
+        if(isValid){
+            throw new Api404Error("is valid is true", "testError");
+        }
+
+        return 'hellow';
+
+    
 
     }
 
