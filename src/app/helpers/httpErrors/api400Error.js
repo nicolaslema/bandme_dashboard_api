@@ -7,7 +7,7 @@ class Api400Error extends BaseError{
         methodName,
         apiName = "dashboardAPI",
         statusCode = HttpStatusCode.BAD_REQUEST,
-        description = "BAD REQUEST",
+        description = "BAD HTTP REQUEST",
         isOperational = true
     )
     {
