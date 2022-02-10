@@ -3,15 +3,20 @@ const Post = require('../models/post.model');
 const mongoose = require('mongoose');
 const res = require('express/lib/response');
 const Api404Error = require('../helpers/httpErrors/api404Error');
+const Api400Error = require('../helpers/httpErrors/api400Error');
+const BaseError = require('../helpers/baseError');
+const httpStatusCodes = require('../../utils/httpErrors.model');
+const {logError, returnError} = require('../helpers/errorHandler');
 
 
 
 class PostService {
     
+    
     constructor(){}
-
+    
     async createPost(title, message, selectedFile, creator ){
-        // const createdAt = new Date()
+
         try {
             //TODO: Verificaciones
             const newPost = new Post({title, message, selectedFile, creator, createdAt: new Date()})
@@ -32,22 +37,39 @@ class PostService {
         }
     }
 
-    async getPost(_id){
 
+
+
+    
+    async getPost(id){
+       
         try {
-            const post = await postModel.findById(_id);
-
+            const post = await postModel.findById(id);     
+            if(!post){
+                throw new Api404Error("Not found records in the Database", "Get Post");
+            }
             return post;
+
         } catch (error) {
-            console.log(error);
+            logError(error);
+            
+            
         }
+
+        
+        
     }
+
+
+
+
+
 
     async updatePost(id, title, message, selectedFile){
         if(!mongoose.Types.ObjectId.isValid(id)) return `No post with id: ${id}`;
         try {
-            
-            const updatedPost = {title, message, selectedFile, _id: id};
+
+            const updatedPost = {title, message, selectedFile, id};
             const postUpdateResult = await postModel.findByIdAndUpdate(id, updatedPost, {new: true});
             return postUpdateResult;
             
@@ -89,7 +111,8 @@ class PostService {
 
     }
 
-
+    //TEST PARA ERROR HANDLER
+    //TODO: DELETE AFTER TEST
     async testError(){
         const isValid = true;
 

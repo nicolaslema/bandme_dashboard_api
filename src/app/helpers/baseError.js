@@ -1,6 +1,3 @@
-const HttpStatusCode = require('../../utils/httpErrors.model');
-const express = require('express');
-
 class BaseError extends Error{
     constructor(message, methodName, statusCode, isOperational, description, apiName){
         super(description);

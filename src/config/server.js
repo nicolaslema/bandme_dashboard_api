@@ -3,7 +3,7 @@ const express = require('express');
 const cors = require('cors');
 const helmet = require('helmet');
 const {connectDB} = require('../config/db');
-const {errorMiddleWare} = require('../app/middlewares/errorHandler.middleware');
+const { errorLogger,errorResponse} = require('../app/middlewares/errorHandler.middleware');
 
 
 //TODO: constants file
@@ -28,7 +28,10 @@ class Server{
         this.app.use(express.json());
         this.app.use(express.urlencoded({limit:'30mb', extended: true}));
         this.app.use(helmet());
-        this.app.use(errorMiddleWare);
+        this.app.use(errorLogger);
+        this.app.use(errorResponse);
+    
+    
        
         
     }

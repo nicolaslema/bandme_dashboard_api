@@ -1,26 +1,19 @@
-const ErrorHandler = require('../helpers/errorHandler');
-
-const errorHandler = new ErrorHandler();
-
-    async function errorMiddleWare(err, req, res, next){
-        if(errorHandler.isTrustedError(err)){
-            next(err);
-        }
-
-        await errorHandler.logError(err);
+const {logError} = require('../helpers/errorHandler');
 
 
-        process.on('uncaughtException'), async(err) =>{
-            await errorHandler.logError(err);
-            if(!errorHandler.isOperationalError(err)) process.exit(1);
-        }
+const errorLogger = (error, req, res, next)=>{
+    logError('\x1b[31m%s\x1b[0m', 'ERROR', error);
+    next(error);
+    
+}
 
-        process.on('unhandledRejection', (reason)=>{
-            throw reason;
-        })
-    }
+const errorResponse = (error, req, res, next)=>{
+    res.status(error.statusCode).json({error});
+}
 
 
 
+module.exports ={ errorLogger, errorResponse };
 
-module.exports = {errorMiddleWare};
+
+

@@ -1,7 +1,8 @@
 const {response} = require('express');
+const Api400Error = require('../../helpers/httpErrors/api400Error');
 const Api404Error = require('../../helpers/httpErrors/api404Error');
 const postService = require('../../services/post.service');
-const PostService = require('../../services/post.service')
+const {logError, returnError} = require('../../helpers/errorHandler');
 
 //TODO:Agregar Verificacion
 
@@ -15,21 +16,31 @@ const getPosts = async(req,res = response)=>{
 
 }
 
-const getPost = async(req,res = response)=>{
-    const {_id} = req.query;
-    const post = await postService.getPost(_id);
+
+
+
+
+
+
+const getPost = async(req, res = response, next) => {
+    const {id} = req.body;
+   
     try {
-        res.status(200).json({post});
+        const post = await postService.getPost(id);     
+        res.status(200).send({post});
     } catch (error) {
-        console.error(error);
+        next(error);
     }
 }
 
+
+
+
+
+
 const createPost = async(req, res = resposne)=>{
-    //TODO: capturar ID de usuario para asignar creador al post
-    const {title, message, selectedFile, userId } = req.body;
-    //ID DEL USUARIO CREADOR DEL POST
-    const creator = userId;
+    const {title, message, selectedFile, creator } = req.body;
+    //Creator = id del usuario creador del post.
     const createdPost = await postService.createPost(title, message, selectedFile, creator)
     try {
         res.status(200).json(createdPost);
@@ -39,8 +50,7 @@ const createPost = async(req, res = resposne)=>{
 }
 
 const updatePost = async(req, res = response)=>{
-    const {id} = req.query;
-    const {title, message, selectedFile} = req.body
+    const {title, message, selectedFile, id} = req.body
     const postUpdateResult = await postService.updatePost(id, title, message, selectedFile);
     try {
         res.status(200).json({postUpdateResult});
@@ -50,7 +60,7 @@ const updatePost = async(req, res = response)=>{
 }
 
 const deletePost = async(req, res = response)=>{
-    const {id} = req.query;
+    const {id} = req.body;
     const postDeletedResult = await postService.deletePost(id);
     try {  
         res.status(200).json({message: postDeletedResult});
@@ -60,9 +70,9 @@ const deletePost = async(req, res = response)=>{
 }
 
 const likePost = async(req, res = resposne)=>{
-    const {id} = req.query;
-    //ID DEL USUARIO
-    const {creator} = req.body;
+    //Creator = id del usuario que realiza el LIKE al post
+    //ID = id del post al que el usuario dio LIKE
+    const {creator, id} = req.body;
 
     if(!creator){
         return res.json({message: "Authenticate to like a post"})
@@ -79,7 +89,8 @@ const likePost = async(req, res = resposne)=>{
 }
 
 
-
+//@DESC TEST ERROR
+//TODO: DELETE AFTER TEST
 const testErrors = async(req, res = response, next) =>{
     try {
         let data = await postService.testError();
