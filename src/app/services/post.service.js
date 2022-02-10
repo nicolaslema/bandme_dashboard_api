@@ -17,13 +17,13 @@ class PostService {
     async createPost(title, message, selectedFile, creator ){
 
         if(!title){
-            throw  new BaseError('Must provide a title', 'createPost', httpStatusCodes.INTERNAL_SERVER, true, "desc", "dashboardAPI")
+            throw  new BaseError('Must provide a title', 'createPost', httpStatusCodes.INTERNAL_SERVER, true, "The post needs a tittle", "dashboardAPI")
         }
         if(!message){
-            throw  new Api400Error('Must provide a message', 'createPost')
+            throw  new BaseError('Must provide a message', 'createPost', httpStatusCodes.INTERNAL_SERVER, true, "The post needs a message", "dashboardAPI")
         }
         if(!creator){
-            throw  new Api400Error('Must provide a creator', 'createPost')
+            throw  new BaseError('Must provide a creator', 'createPost', httpStatusCodes.INTERNAL_SERVER, true, "The post needs a creator", "dashboardAPI")
         }
 
         try {

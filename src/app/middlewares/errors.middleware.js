@@ -4,18 +4,16 @@ const handler = new Errorhandler();
 
 
 exports.errorHandler = async(err, req, res, next) =>{
+    //este filtro es una poronga
     const statusCode = err.statusCode === 200 ? 500 : err.statusCode;
 
-    res.status(statusCode)
+    res.status(err.statusCode)
     res.json({
         status: statusCode,
         message: err.message,
         originalUrl : req.originalUrl,
         description: err.description
     })
-
-
-
 
     process.on('uncaughtException', async(err)=>{
         await handler.logError(err);
@@ -31,13 +29,5 @@ exports.errorHandler = async(err, req, res, next) =>{
         await handler.logError(err);
         return ;
     }
-
-   
-
-
-   
- 
-
-    
   
 }

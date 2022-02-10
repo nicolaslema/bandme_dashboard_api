@@ -30,16 +30,10 @@ const getPost = async(req, res = response, next) => {
 }
 
 
-
-
-
-
 const createPost = async(req, res = resposne, next)=>{
     const {title, message, selectedFile, creator } = req.body;
-   
-
     //Creator = id del usuario creador del post.
-
+    
     try {
         const createdPost = await postService.createPost(title, message, selectedFile, creator)     
         res.status(200).json(createdPost);

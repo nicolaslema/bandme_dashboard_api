@@ -10,7 +10,6 @@ class Errorhandler {
         console.log('\x1b[31m%s\x1b[0m', "ERROR LOGGER: ", err);
     }
 
-    
     isOperationalError(err){
         if( err instanceof BaseError){
             return err.isOperational;
