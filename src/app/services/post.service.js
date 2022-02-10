@@ -16,6 +16,16 @@ class PostService {
     
     async createPost(title, message, selectedFile, creator ){
 
+        if(!title){
+            throw  new BaseError('Must provide a title', 'createPost', httpStatusCodes.INTERNAL_SERVER, true, "desc", "dashboardAPI")
+        }
+        if(!message){
+            throw  new Api400Error('Must provide a message', 'createPost')
+        }
+        if(!creator){
+            throw  new Api400Error('Must provide a creator', 'createPost')
+        }
+
         try {
             //TODO: Verificaciones
             const newPost = new Post({title, message, selectedFile, creator, createdAt: new Date()})
@@ -23,7 +33,7 @@ class PostService {
             return savedPost;
             
         } catch (error) {
-           console.log(error)
+           throw error
         }
     }
 

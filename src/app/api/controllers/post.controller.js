@@ -1,4 +1,6 @@
 const {response} = require('express');
+const httpStatusCodes = require('../../../utils/httpErrors.model');
+const BaseError = require('../../helpers/baseError');
 const Api400Error = require('../../helpers/httpErrors/api400Error');
 const Api404Error = require('../../helpers/httpErrors/api404Error');
 const postService = require('../../services/post.service');
@@ -17,20 +19,12 @@ const getPosts = async(req,res = response)=>{
 
 
 
-
-
-
-
 const getPost = async(req, res = response, next) => {
     const {id} = req.body;
     try {   
-        
         const post = await postService.getPost(id);
         res.status(200).json({post});
     } catch (error) {
-        const message = error instanceof Api404Error ? error.message : 'Generic Error'
-        const statusCode = error.statusCode;
-        //res.status(statusCode).send({message: message, statusCode: statusCode, originalUrl: originalUrl});
         next(error);
     }
 }
@@ -40,16 +34,22 @@ const getPost = async(req, res = response, next) => {
 
 
 
-const createPost = async(req, res = resposne)=>{
+const createPost = async(req, res = resposne, next)=>{
     const {title, message, selectedFile, creator } = req.body;
+   
+
     //Creator = id del usuario creador del post.
-    const createdPost = await postService.createPost(title, message, selectedFile, creator)
+
     try {
+        const createdPost = await postService.createPost(title, message, selectedFile, creator)     
         res.status(200).json(createdPost);
     } catch (error) {
-        console.error(error);
+        next(error);
     }
 }
+
+
+
 
 const updatePost = async(req, res = response)=>{
     const {title, message, selectedFile, id} = req.body
