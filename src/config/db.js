@@ -8,7 +8,7 @@ const connectDB = () =>{
         useUnifiedTopology: true,
       },
       )
-      console.log("🚀 ~ file: db.js ~ line 21 ~ connectDB ~ Database connected ")  
+      console.log('\x1b[32m%s\x1b[0m', "🚀 ~ file: db.js ~ line 11 ~ connectDB ~ Database connected ")  
     } catch (err) {
       console.error(err)
       process.exit(1)

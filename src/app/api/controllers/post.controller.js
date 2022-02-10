@@ -2,7 +2,6 @@ const {response} = require('express');
 const Api400Error = require('../../helpers/httpErrors/api400Error');
 const Api404Error = require('../../helpers/httpErrors/api404Error');
 const postService = require('../../services/post.service');
-const {logError, returnError} = require('../../helpers/errorHandler');
 
 //TODO:Agregar Verificacion
 
@@ -24,11 +23,14 @@ const getPosts = async(req,res = response)=>{
 
 const getPost = async(req, res = response, next) => {
     const {id} = req.body;
-   
-    try {
-        const post = await postService.getPost(id);     
-        res.status(200).send({post});
+    try {   
+        
+        const post = await postService.getPost(id);
+        res.status(200).json({post});
     } catch (error) {
+        const message = error instanceof Api404Error ? error.message : 'Generic Error'
+        const statusCode = error.statusCode;
+        //res.status(statusCode).send({message: message, statusCode: statusCode, originalUrl: originalUrl});
         next(error);
     }
 }

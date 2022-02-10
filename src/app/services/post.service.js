@@ -6,7 +6,6 @@ const Api404Error = require('../helpers/httpErrors/api404Error');
 const Api400Error = require('../helpers/httpErrors/api400Error');
 const BaseError = require('../helpers/baseError');
 const httpStatusCodes = require('../../utils/httpErrors.model');
-const {logError, returnError} = require('../helpers/errorHandler');
 
 
 
@@ -30,8 +29,7 @@ class PostService {
 
     async getPosts (){
         try {
-            const allPosts = postModel.find({});
-            return allPosts;
+            return await postModel.find({});;
         } catch (error) {
             console.error(error);
         }
@@ -42,22 +40,15 @@ class PostService {
 
     
     async getPost(id){
-       
         try {
-            const post = await postModel.findById(id);     
-            if(!post){
-                throw new Api404Error("Not found records in the Database", "Get Post");
-            }
+            const post = await postModel.findById(id);
+                if(post === null){
+                    throw new Api404Error('User not found', "getPost")
+                }
             return post;
-
         } catch (error) {
-            logError(error);
-            
-            
+            throw error  
         }
-
-        
-        
     }
 
 

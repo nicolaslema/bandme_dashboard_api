@@ -3,7 +3,8 @@ const express = require('express');
 const cors = require('cors');
 const helmet = require('helmet');
 const {connectDB} = require('../config/db');
-const { errorLogger,errorResponse} = require('../app/middlewares/errorHandler.middleware');
+const {errorHandler} = require('../app/middlewares/errors.middleware')
+
 
 
 //TODO: constants file
@@ -19,6 +20,7 @@ class Server{
         this.rootPath = rootPath;
         this.initMiddlewares();
         this.routes();
+        this.initErrorMiddleware();
         connectDB()
     }
 
@@ -27,15 +29,13 @@ class Server{
         this.app.use(cors());
         this.app.use(express.json());
         this.app.use(express.urlencoded({limit:'30mb', extended: true}));
-        this.app.use(helmet());
-        this.app.use(errorLogger);
-        this.app.use(errorResponse);
-    
-    
-       
-        
+        this.app.use(helmet());    
     }
 
+    initErrorMiddleware(){
+        this.app.use(errorHandler)
+    }
+    
     routes(){
         this.app.use(this.rootPath, require('../app/api/routes/post.routes'));
     }
@@ -45,7 +45,7 @@ class Server{
         this.app.listen(this.port, ()=>{
             
         })
-        console.log("🚀 ~ file: server.js ~ line 42 ~ Server ~ App listen ~ port", this.port)
+        console.log('\x1b[32m%s\x1b[0m', "🚀 ~ file: server.js ~ line 49 ~ Server ~ App listen on port", this.port)
         
     }
 
