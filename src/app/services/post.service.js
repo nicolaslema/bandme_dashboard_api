@@ -14,11 +14,11 @@ class PostService {
     
     constructor(){}
     
-    async createPost(title, message, selectedFile, creator ){
+    async createPost(title, message, selectedFile, author ){
 
         try {
             //TODO: Verificaciones
-            const newPost = new Post({title, message, selectedFile, creator, createdAt: new Date()})
+            const newPost = new Post({title, message, selectedFile, author, createdAt: new Date()})
             const savedPost = await newPost.save();
             return savedPost;
             
@@ -81,18 +81,18 @@ class PostService {
     }
 
 
-    async likePost(id, creator){
+    async likePost(id, user_id){
         if(!mongoose.Types.ObjectId.isValid(id)) return `No post with id: ${id}`;
 
         try {
             const post = await postModel.findById(id);
             //const index = post.likes.findByIndex((id) => id === String(creator));
-            const index = post.likes.indexOf(creator);
+            const index = post.likes.indexOf(user_id);
         
             if(index === -1){
-                post.likes.push(creator)
+                post.likes.push(user_id)
             }else{
-                post.likes = post.likes.filter((id)=> id !== String(creator));
+                post.likes = post.likes.filter((id)=> id !== String(user_id));
             }
             const updatedPost = await postModel.findByIdAndUpdate(id, post, {new: true})
             return updatedPost;

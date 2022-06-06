@@ -12,7 +12,7 @@ const PostSchema = Schema({
         reqired:[true, 'Message is required'],
         
 },
-    creator: { 
+    author: { 
         type: String,
         
 },
@@ -24,7 +24,8 @@ const PostSchema = Schema({
 },
 
     likeCount:{
-        type: Number
+        type: Number,
+        default: 0
 },
 
     selectedFile: { 

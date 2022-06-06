@@ -41,9 +41,9 @@ const getPost = async(req, res = response, next) => {
 
 
 const createPost = async(req, res = resposne)=>{
-    const {title, message, selectedFile, creator } = req.body;
+    const {title, message, selectedFile, author } = req.body;
     //Creator = id del usuario creador del post.
-    const createdPost = await postService.createPost(title, message, selectedFile, creator)
+    const createdPost = await postService.createPost(title, message, selectedFile, author)
     try {
         res.status(200).json(createdPost);
     } catch (error) {
@@ -72,15 +72,15 @@ const deletePost = async(req, res = response)=>{
 }
 
 const likePost = async(req, res = resposne)=>{
-    //Creator = id del usuario que realiza el LIKE al post
-    //ID = id del post al que el usuario dio LIKE
-    const {creator, id} = req.body;
+    //user_id = id del usuario que realiza el LIKE al post
+    //id = id del post al que el usuario dio LIKE
+    const {id, user_id} = req.body;
 
-    if(!creator){
+    if(!user_id){
         return res.json({message: "Authenticate to like a post"})
     }
     
-    const likedPost = await postService.likePost(id, creator);
+    const likedPost = await postService.likePost(id, user_id);
 
     try {
         res.status(200).json({likedPost});
