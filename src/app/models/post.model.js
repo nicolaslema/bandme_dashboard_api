@@ -22,6 +22,11 @@ const PostSchema = Schema({
         default: []
         
 },
+
+    likeCount:{
+        type: Number
+},
+
     selectedFile: { 
         type: String,
         default: ''

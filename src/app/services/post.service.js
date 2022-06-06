@@ -86,9 +86,9 @@ class PostService {
 
         try {
             const post = await postModel.findById(id);
-            
-            const index = post.likes.findByIndex((id) => id === String(creator))
-
+            //const index = post.likes.findByIndex((id) => id === String(creator));
+            const index = post.likes.indexOf(creator);
+        
             if(index === -1){
                 post.likes.push(creator)
             }else{
@@ -99,6 +99,23 @@ class PostService {
         } catch (error) {
             console.error(error);
         }
+
+    }
+
+
+    async countLikes(id){
+        if(!mongoose.Types.ObjectId.isValid(id)) return `No post with id: ${id}`;
+
+        try { 
+            const post = await postModel.findById(id);
+            console.log(post.likes.length)
+            return post.likes.length
+        
+        }catch(error){
+            console.error(error);
+        }
+
+
 
     }
 

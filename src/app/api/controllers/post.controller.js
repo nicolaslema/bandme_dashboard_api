@@ -91,6 +91,27 @@ const likePost = async(req, res = resposne)=>{
 }
 
 
+
+const likeCount =  async(req, res  =  resposne)=>{
+    const {id} =  req.body;
+
+    const likes = await postService.countLikes(id);
+    try{
+        res.status(200).json({likes})
+    }catch(error){
+        console.error(error);
+    }
+}
+
+
+
+
+
+
+
+
+
+
 //@DESC TEST ERROR
 //TODO: DELETE AFTER TEST
 const testErrors = async(req, res = response, next) =>{
@@ -108,4 +129,12 @@ const testErrors = async(req, res = response, next) =>{
 
 
 
-module.exports = {getPosts, createPost, getPost, updatePost,deletePost, likePost, testErrors}
+module.exports = {
+    getPosts,
+    createPost,
+    getPost,
+    updatePost,
+    deletePost,
+    likePost,
+    testErrors,
+    likeCount}
