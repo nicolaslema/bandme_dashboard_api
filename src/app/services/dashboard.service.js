@@ -146,26 +146,17 @@ class DashboardService {
     }
 
     async getFriendsPostList(userUid){
-        //console.log("desde el service se obtiene el user uid: ", userUid);
         let postList = {
             exist: false,
-            data: {
-                //aca es un array de objetos
-            }
+            data: {}
         };
 
         try{
-            //1 obtengo mediante userUid los datos del usuario principal
             const userProfileDb = await User.findById(userUid);
-            //console.log('datos obtenidos de la db del usuario: '+userProfileDb);
-            //2 recorro su lista de amigos que es una lista de uid de cada amigo agregado y traigo los datos de cada amigo
             const {friend_list} = userProfileDb;
-            //console.log('lista de amigos obtenidos: ', friend_list);
-            //3 recorrer la lista de datos de mis amigos y obtener el nombre y apellido de cada amigo, si isPremium y su lista de posteos
             const listadoGeneralPosteosPromesa = [];
             
             for( const friend of friend_list) {
-            //4 recorro la lista de amigos y luego recorro su lista de uid de posteos que tiene cada amigo y traigo los datos de cada posteo (image_url, uid)
                 for( const idPosteo of friend.post_list ) {
                     const userPostDb = await Post.findById(idPosteo);
                     const {image_url, id_owner} = userPostDb;
@@ -182,11 +173,7 @@ class DashboardService {
                 }
             }
             const posteosDashboard = await Promise.all(listadoGeneralPosteosPromesa);
-            //5 Tener todos los posteos en una unica lista para despues dividirla en dos premium y no premium
-            //console.log('lista terminada: ', posteosDashboard);
 
-            //6 finalmente recorro esta lista que contiene toda la data recolectada, y filtro por el campo isPremium de cada objeto, los true van a una lista premium y los falses a otra lista
-            //7 luego que tengo dos listas separadas las concateno poniendo en primer lugar todos los premiums y en segundo los No premium
             const trueFirst = posteosDashboard.sort((a, b) => Number(b.bool) - Number(a.bool));
             console.log('LISTA ORDENADA BY TRUE VALUES: ', trueFirst);
             postList = {
