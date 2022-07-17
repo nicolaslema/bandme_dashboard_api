@@ -1,12 +1,12 @@
 const {response} = require('express');
 const Api400Error = require('../../helpers/httpErrors/api400Error');
 const Api404Error = require('../../helpers/httpErrors/api404Error');
-const postService = require('../../services/post.service');
+const dashboardService = require('../../services/dashboard.service');
 
 //TODO:Agregar Verificacion
 
 const getPosts = async(req,res = response)=>{
-    const allPosts = await postService.getPosts();
+    const allPosts = await dashboardService.getPosts();
     try {
         res.status(200).json({allPosts});
     } catch (error) {
@@ -25,7 +25,7 @@ const getPost = async(req, res = response, next) => {
     const {id} = req.body;
     try {   
         
-        const post = await postService.getPost(id);
+        const post = await dashboardService.getPost(id);
         res.status(200).json({post});
     } catch (error) {
         const message = error instanceof Api404Error ? error.message : 'Generic Error'
@@ -43,7 +43,7 @@ const getPost = async(req, res = response, next) => {
 const createPost = async(req, res = resposne)=>{
     const {title, message, selectedFile, author } = req.body;
     //Creator = id del usuario creador del post.
-    const createdPost = await postService.createPost(title, message, selectedFile, author)
+    const createdPost = await dashboardService.createPost(title, message, selectedFile, author)
     try {
         res.status(200).json(createdPost);
     } catch (error) {
@@ -53,7 +53,7 @@ const createPost = async(req, res = resposne)=>{
 
 const updatePost = async(req, res = response)=>{
     const {title, message, selectedFile, id} = req.body
-    const postUpdateResult = await postService.updatePost(id, title, message, selectedFile);
+    const postUpdateResult = await dashboardService.updatePost(id, title, message, selectedFile);
     try {
         res.status(200).json({postUpdateResult});
     } catch (error) {
@@ -63,7 +63,7 @@ const updatePost = async(req, res = response)=>{
 
 const deletePost = async(req, res = response)=>{
     const {id} = req.body;
-    const postDeletedResult = await postService.deletePost(id);
+    const postDeletedResult = await dashboardService.deletePost(id);
     try {  
         res.status(200).json({message: postDeletedResult});
     } catch (error) {
@@ -80,7 +80,7 @@ const likePost = async(req, res = resposne)=>{
         return res.json({message: "Authenticate to like a post"})
     }
     
-    const likedPost = await postService.likePost(id, user_id);
+    const likedPost = await dashboardService.likePost(id, user_id);
 
     try {
         res.status(200).json({likedPost});
@@ -95,7 +95,7 @@ const likePost = async(req, res = resposne)=>{
 const likeCount =  async(req, res  =  resposne)=>{
     const {id} =  req.body;
 
-    const likes = await postService.countLikes(id);
+    const likes = await dashboardService.countLikes(id);
     try{
         res.status(200).json({likes})
     }catch(error){
@@ -104,7 +104,34 @@ const likeCount =  async(req, res  =  resposne)=>{
 }
 
 
-
+const getFriendsPostController = async(req, res = response) => {
+    const token = req.headers['auth-token'];
+    console.log('token recibido desde el body controller: '+token);
+    if(token != undefined) { //if the token comes in the request
+        const {uid} = await dashboardService.decodeToken(token);
+        console.log('RESULTADO DESDE CONTROLLER: ' + JSON.stringify(uid));
+        const getFriendPosteosList = await dashboardService.getFriendsPostList(uid);
+        let response;
+        if(getFriendPosteosList.exist){
+            response = res.status(200).json({
+                exist: getFriendPosteosList.exist,
+                posteos_data: getFriendPosteosList.data,
+                message: 'Posteos for dashboard success'
+            });
+        } else {
+            response = res.status(200).json({
+                exist: getFriendPosteosList.exist,
+                posteos_data: getFriendPosteosList.data,
+                message: 'Posteos for dashboard failure'
+            });
+        }
+        return response;
+    } else {
+        return res.status(400).json({
+            message: 'Error request by bad token'
+        });
+    }
+}
 
 
 
@@ -116,7 +143,7 @@ const likeCount =  async(req, res  =  resposne)=>{
 //TODO: DELETE AFTER TEST
 const testErrors = async(req, res = response, next) =>{
     try {
-        let data = await postService.testError();
+        let data = await dashboardService.testError();
         res.status(200).json({message: data});
     } catch (error) {
         const message = error instanceof Api404Error ? error.message : 'Error en el TestError endpoint';
@@ -137,4 +164,6 @@ module.exports = {
     deletePost,
     likePost,
     testErrors,
-    likeCount}
+    likeCount,
+    getFriendsPostController
+}

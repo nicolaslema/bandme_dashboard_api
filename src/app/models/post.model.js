@@ -1,44 +1,39 @@
-const {Schema, model} = require('mongoose');
+const { Schema, model, mongoose } = require('mongoose');
 
 const PostSchema = Schema({
-
-    title: { 
-        type: String,
-        reqired:[true, 'Title is required'],
-        unique: true
-},
-    message: { 
-        type: String,
-        reqired:[true, 'Message is required'],
-        
-},
-    author: { 
-        type: String,
-        
-},
-
-    likes: { 
-        type: [String],
-        default: []
-        
-},
-
-    likeCount:{
-        type: Number,
-        default: 0
-},
-
-    selectedFile: { 
-        type: String,
-        default: ''
-        
-        
-},
-    createdAt: {
-        type: Date,
-        default: new Date()
+    _id: mongoose.SchemaTypes.ObjectId,
+    id_owner: {
+        type: String
     },
+    title: {
+        type: String
+    },
+    street: {
+        type: String
+    },
+    street_number: {
+        type: String
+    },
+    postal_code: {
+        type: String
+    },
+    description: {
+        type: String
+    },
+    date: {
+        type: String
+    },
+    time: {
+        type: String
+    },
+    checkbox: {
+        type: Object
+    },
+    image_url: {
+        type: String
+    }
+});
 
-})
+const Post = model('Post', PostSchema);
 
-module.exports = model('Post', PostSchema);
+module.exports = Post;
