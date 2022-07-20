@@ -133,7 +133,49 @@ const getFriendsPostController = async(req, res = response) => {
     }
 }
 
-
+const findUserByName = async(req, res = response) => {
+    const token = req.headers['auth-token'];
+    const {username, lastName} = req.body;
+    console.log('token recibido desde el body controller: '+token);
+    if(token != undefined) {
+        try{ //----> AGREGAR ESTA VALIDACION
+            const {uid} = await dashboardService.decodeToken(token);
+            console.log('RESULTADO DESDE CONTROLLER: ' + JSON.stringify(uid));
+            if(uid != '' && uid != undefined && uid != null){ //----> AGREGAR ESTA VALIDACION
+                const userWanted = await dashboardService.findUserByName(username, lastName, uid);
+                let response;
+                if(userWanted.exist){
+                    response = res.status(200).json({
+                        exist: userWanted.exist,
+                        data: userWanted.data,
+                        message: userWanted.message
+                    });
+                } else {
+                    response = res.status(400).json({
+                        exist: userWanted.exist,
+                        data: userWanted.data,
+                        message: userWanted.message
+                    });
+                }
+            }else{
+                console.log('No se pudo autenticar la identidad por que el token es incorrecto ');
+                return res.status(500).json({
+                    message: 'No se pudo autenticar la identidad'
+                });
+            }
+            return response;
+        } catch(error){
+            console.log('No se pudo autenticar la identidad: ', error);
+            return res.status(500).json({
+                message: 'No se pudo autenticar la identidad'
+            });
+        }
+    } else {
+        return res.status(500).json({
+            message: 'Error request by bad token'
+        });
+    }
+}
 
 
 
@@ -165,5 +207,6 @@ module.exports = {
     likePost,
     testErrors,
     likeCount,
-    getFriendsPostController
+    getFriendsPostController,
+    findUserByName
 }

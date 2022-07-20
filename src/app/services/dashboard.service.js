@@ -191,6 +191,63 @@ class DashboardService {
         return postList;
     }
 
+    async findUserByName(name, lastName, userUid){
+        let user = {
+            exist: false,
+            data: {},
+            message: ''
+        };
+        //evitar que uno se auto busque
+        if(name != null && name != undefined && name.length > 0){
+            try{
+                const {_id} = await User.findById(userUid);
+                //console.log('Datos del usuario principal: ', _id);
+                const userWanted = await User.findOne({first_name: name, last_name: lastName});
+                //console.log('datos encontrados del usuario buscado: ', userWanted);
+                //console.log('ID DEL USUARIO PRINCIPAL: ', _id, ' /// ID DEL USUARIO ENCONTRADO: ', userWanted._id);
+                if(userWanted != undefined && userWanted != null){
+                    if(JSON.stringify(_id) != JSON.stringify(userWanted._id)){
+                        user = {
+                            exist: true,
+                            data: {userWanted},
+                            message: 'successful search'
+                        };
+                    }else {
+                        user = {
+                            exist: false,
+                            data: {},
+                            message: 'Failure search 404'
+                        };
+                    }
+                    
+                } else {
+                    user = {
+                        exist: false,
+                        data: {},
+                        message: 'Failure search'
+                    };
+                }
+                
+            }catch(error){
+                console.log('Error no se encontro un usuario con ese nombre: ', error);
+                user = {
+                    exist: false,
+                    data: {},
+                    message: 'Error no se encontro un usuario con ese nombre'
+                };
+            }        
+        } else {
+            console.log('Error nombre de usuario incorrecto: ', error);
+            user = {
+                exist: false,
+                data: {},
+                message: 'Error nombre de usuario incorrecto'
+            };
+        }
+        
+        return user;
+    }
+
 //con el token del usuario lo mando a desencriptar obtengo uid del usuario para ir a buscar a la base de datos su info
 
 //para dashboard , crear una lista de 10 posteos y 10 posteos premium.
