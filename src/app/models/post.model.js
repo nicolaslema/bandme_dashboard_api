@@ -31,7 +31,17 @@ const PostSchema = Schema({
     },
     image_url: {
         type: String
-    }
+    },
+    likes: { 
+        type: [String],
+        default: []
+        
+},
+
+    like_count:{
+        type: Number,
+        default: 0
+},
 });
 
 const Post = model('Post', PostSchema);

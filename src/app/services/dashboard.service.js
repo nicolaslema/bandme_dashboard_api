@@ -28,85 +28,25 @@ class DashboardService {
         }
     }
     
-    async createPost(title, message, selectedFile, author ){
+ 
 
-        try {
-            //TODO: Verificaciones
-            const newPost = new PostOld({title, message, selectedFile, author, createdAt: new Date()})
-            const savedPost = await newPost.save();
-            return savedPost;
-            
-        } catch (error) {
-           console.log(error)
-        }
-    }
-
-    async getPosts (){
-        try {
-            return await postModel.find({});;
-        } catch (error) {
-            console.error(error);
-        }
-    }
-
-
-
-
-    
-    async getPost(id){
-        try {
-            const post = await postModel.findById(id);
-                if(post === null){
-                    throw new Api404Error('User not found', "getPost")
-                }
-            return post;
-        } catch (error) {
-            throw error  
-        }
-    }
-
-
-
-
-
-
-    async updatePost(id, title, message, selectedFile){
-        if(!mongoose.Types.ObjectId.isValid(id)) return `No post with id: ${id}`;
-        try {
-
-            const updatedPost = {title, message, selectedFile, id};
-            const postUpdateResult = await postModel.findByIdAndUpdate(id, updatedPost, {new: true});
-            return postUpdateResult;
-            
-        } catch (error) {
-            console.log(error);
-            
-        }
-    }
-
-    async deletePost(id){
-        if(!mongoose.Types.ObjectId.isValid(id)) return `No post with id: ${id}`;
-        try {
-            await postModel.findByIdAndRemove(id);
-            return "POST DELETED"
-        } catch (error) {
-            console.log(error);
-        }
-    }
-
-
-    async likePost(id, user_id){
+//LIKES
+    async likePost(id, userUid){
+        let likedPost = {
+            exist: false,
+            data: {}
+        };
         if(!mongoose.Types.ObjectId.isValid(id)) return `No post with id: ${id}`;
 
         try {
             const post = await postModel.findById(id);
             //const index = post.likes.findByIndex((id) => id === String(creator));
-            const index = post.likes.indexOf(user_id);
+            const index = post.likes.indexOf(userUid);
         
             if(index === -1){
-                post.likes.push(user_id)
+                post.likes.push(userUid)
             }else{
-                post.likes = post.likes.filter((id)=> id !== String(user_id));
+                post.likes = post.likes.filter((id)=> id !== String(userUid));
             }
             const updatedPost = await postModel.findByIdAndUpdate(id, post, {new: true})
             return updatedPost;
@@ -116,7 +56,7 @@ class DashboardService {
 
     }
 
-
+//COUNT LIKES
     async countLikes(id){
         if(!mongoose.Types.ObjectId.isValid(id)) return `No post with id: ${id}`;
 
