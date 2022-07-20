@@ -1,5 +1,5 @@
 const express = require('express');
-const {getPosts,likeCount, createPost, getPost, updatePost, deletePost,likePost, testErrors, getFriendsPostController, findUserByName } = require('../controllers/dashboard.controller')
+const {getPosts,likeCount, createPost, getPost, updatePost, deletePost,likePost, testErrors, getFriendsPostController, findUserByName, findUsersByType } = require('../controllers/dashboard.controller')
 
 
 const router = express.Router();
@@ -16,5 +16,6 @@ router.post('/getLikes', likeCount);
 
 router.post('/get-post-list', getFriendsPostController);
 router.post('/find-user', findUserByName);
+router.post('/find-users-type', findUsersByType);
 
 module.exports = router;

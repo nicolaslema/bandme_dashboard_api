@@ -191,6 +191,50 @@ class DashboardService {
         return postList;
     }
 
+    async findUsersByType(userUid, type) {
+        let userList = {
+            exist: false,
+            data: {},
+            message: '',
+            size: 0
+        };
+        try{
+            //evitar traerte a vos mismo
+            const {_id} = await User.findById(userUid);
+            const users = await User.find({user_type: type});
+            console.log('USUARIOS QUE COINCIDEN CON EL MISMO TIPO: ', users);
+            if(users != undefined && users.length > 0){
+                const userListCleaned = users.filter(user => JSON.stringify(user._id) != JSON.stringify(_id));
+                console.log('USUARIOS QUE COINCIDEN CON EL MISMO TIPO CLEANED: ', userListCleaned);
+                userList = {
+                    exist: true,
+                    data: {userListCleaned},
+                    size: userListCleaned.length,
+                    message: 'successful search'
+                };
+            }else{
+                console.log('Error al obtener usuarios ');    
+                userList = {
+                    exist: false,
+                    data: {},
+                    size: 0,
+                    message: 'Error al obtener usuarios'
+                };
+            }
+        }catch(error){
+            console.log('Error al buscar los usuarios: ', error);
+            userList = {
+                exist: false,
+                data: {},
+                size: 0,
+                message: 'Error al buscar los usuarios'
+            };
+
+        }
+        return userList;
+    }
+
+
     async findUserByName(name, lastName, userUid){
         let user = {
             exist: false,
@@ -201,10 +245,7 @@ class DashboardService {
         if(name != null && name != undefined && name.length > 0){
             try{
                 const {_id} = await User.findById(userUid);
-                //console.log('Datos del usuario principal: ', _id);
                 const userWanted = await User.findOne({first_name: name, last_name: lastName});
-                //console.log('datos encontrados del usuario buscado: ', userWanted);
-                //console.log('ID DEL USUARIO PRINCIPAL: ', _id, ' /// ID DEL USUARIO ENCONTRADO: ', userWanted._id);
                 if(userWanted != undefined && userWanted != null){
                     if(JSON.stringify(_id) != JSON.stringify(userWanted._id)){
                         user = {
@@ -227,7 +268,6 @@ class DashboardService {
                         message: 'Failure search'
                     };
                 }
-                
             }catch(error){
                 console.log('Error no se encontro un usuario con ese nombre: ', error);
                 user = {
@@ -244,7 +284,6 @@ class DashboardService {
                 message: 'Error nombre de usuario incorrecto'
             };
         }
-        
         return user;
     }
 

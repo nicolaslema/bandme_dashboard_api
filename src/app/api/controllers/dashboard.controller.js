@@ -177,6 +177,52 @@ const findUserByName = async(req, res = response) => {
     }
 }
 
+const findUsersByType = async(req, res = response) => {
+    const token = req.headers['auth-token'];
+    const {type} = req.body;
+    console.log('token recibido desde el body controller: '+token);
+    if(token != undefined) {
+        try{ //----> AGREGAR ESTA VALIDACION
+            const {uid} = await dashboardService.decodeToken(token);
+            console.log('RESULTADO DESDE CONTROLLER: ' + JSON.stringify(uid));
+            if(uid != '' && uid != undefined && uid != null){ //----> AGREGAR ESTA VALIDACION
+                const usersList = await dashboardService.findUsersByType(uid, type);
+                let response;
+                if(usersList.exist){
+                    response = res.status(200).json({
+                        exist: usersList.exist,
+                        data: usersList.data,
+                        size: usersList.size,
+                        message: usersList.message
+                    });
+                } else {
+                    response = res.status(400).json({
+                        exist: usersList.exist,
+                        data: usersList.data,
+                        size: usersList.size,
+                        message: usersList.message
+                    });
+                }
+            }else{
+                console.log('No se pudo autenticar la identidad por que el token es incorrecto ');
+                return res.status(500).json({
+                    message: 'No se pudo autenticar la identidad'
+                });
+            }
+            return response;
+        } catch(error){
+            console.log('No se pudo autenticar la identidad: ', error);
+            return res.status(500).json({
+                message: 'No se pudo autenticar la identidad'
+            });
+        }
+    } else {
+        return res.status(500).json({
+            message: 'Error request by bad token'
+        });
+    }
+}
+
 
 
 
@@ -208,5 +254,6 @@ module.exports = {
     testErrors,
     likeCount,
     getFriendsPostController,
-    findUserByName
+    findUserByName,
+    findUsersByType
 }
