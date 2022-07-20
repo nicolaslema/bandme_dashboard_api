@@ -191,6 +191,96 @@ class DashboardService {
         return postList;
     }
 
+    async findPosteosByType(userUid, type, userType){ //type --> advertising/search/event : true/false 
+        let posteosList = {
+            exist: false,
+            data: {},
+            message: '',
+            size: 0
+        };
+        try{
+            const {_id} = await User.findById(userUid);
+            switch (type) {
+                case 'advertising':
+                    const posteosAdvertising = await Post.find({'checkbox.advertising': 'true'});
+                    const posteosAdvertisingCleaned = posteosAdvertising.filter(posteo => JSON.stringify(posteo.id_owner) != JSON.stringify(_id));
+                    console.log(posteosAdvertisingCleaned)
+                    posteosList = {
+                        exist: true,
+                        data: {posteosAdvertisingCleaned},
+                        message: 'Lista de posteos de publicidad exitoso',
+                        size: posteosAdvertisingCleaned.length
+                    };
+                    break;
+                case 'search':
+                    const posteosSearch = await Post.find({'checkbox.search': 'true'});
+                    switch (userType) {
+                        case 'ARTIST':
+                            const artistList = posteosSearch.filter(posteo => posteo.checkbox.owner_user_type == userType);
+                            const artistListCleaned = artistList.filter(posteo => JSON.stringify(posteo.id_owner) != JSON.stringify(_id));
+                            posteosList = {
+                                exist: true,
+                                data: {artistListCleaned},
+                                message: 'Lista de posteos de artistas que estan haciendo una busquedad exitoso',
+                                size: artistListCleaned.length
+                            };
+                            break;
+                        case 'BAND':
+                            const bandList = posteosSearch.filter(posteo => posteo.checkbox.owner_user_type == userType);
+                            const bandListCleaned = bandList.filter(posteo => JSON.stringify(posteo.id_owner) != JSON.stringify(_id));
+                            posteosList = {
+                                exist: true,
+                                data: {bandListCleaned},
+                                message: 'Lista de posteos de bandas que estan haciendo una busquedad exitoso',
+                                size: bandListCleaned.length
+                            };
+                             break;
+                        case 'PLACE':
+                            const placeList = posteosSearch.filter(posteo => posteo.checkbox.owner_user_type == userType);
+                            const placeListCleaned = placeList.filter(posteo => JSON.stringify(posteo.id_owner) != JSON.stringify(_id));
+                            posteosList = {
+                                exist: true,
+                                data: {placeListCleaned},
+                                message: 'Lista de posteos de lugares que estan haciendo una busquedad exitoso',
+                                size: placeListCleaned.length
+                            };
+                            break;
+                        default:
+                            break;
+                    }
+                    break;
+                case 'event':
+                    const posteosEvents = await Post.find({'checkbox.event': 'true'});
+                    const posteosEventsCleaned = posteosEvents.filter(posteo => JSON.stringify(posteo.id_owner) != JSON.stringify(_id));
+                    posteosList = {
+                        exist: true,
+                        data: {posteosEventsCleaned},
+                        message: 'Lista de posteos de eventos exitoso',
+                        size: posteosEventsCleaned.length
+                    };
+                    break;
+            
+                default:
+                    posteosList = {
+                        exist: false,
+                        data: {},
+                        message: 'Error default al buscar los posteos',
+                        size: 0
+                    };
+                    break;
+            }
+        }catch(error){
+            console.log('Error al buscar los posteos: ', error);
+            posteosList = {
+                exist: false,
+                data: {},
+                message: 'Error al buscar los posteos',
+                size: 0
+            };
+        }
+        return posteosList;
+    }    
+
     async findUsersByType(userUid, type) {
         let userList = {
             exist: false,

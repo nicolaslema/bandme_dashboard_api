@@ -223,6 +223,53 @@ const findUsersByType = async(req, res = response) => {
     }
 }
 
+const findPosteosByType = async(req, res = response) => {
+    const token = req.headers['auth-token'];
+    const {type, userType} = req.body;
+    console.log('token recibido desde el body controller: '+token);
+    console.log('USERTYPE recibido desde el body controller: '+userType);
+    if(token != undefined) {
+        try{ //----> AGREGAR ESTA VALIDACION
+            const {uid} = await dashboardService.decodeToken(token);
+            console.log('RESULTADO DESDE CONTROLLER: ' + JSON.stringify(uid));
+            if(uid != '' && uid != undefined && uid != null){ //----> AGREGAR ESTA VALIDACION
+                const posteosList = await dashboardService.findPosteosByType(uid, type, userType);
+                let response;
+                if(posteosList.exist){
+                    response = res.status(200).json({
+                        exist: posteosList.exist,
+                        data: posteosList.data,
+                        size: posteosList.size,
+                        message: posteosList.message
+                    });
+                } else {
+                    response = res.status(400).json({
+                        exist: posteosList.exist,
+                        data: posteosList.data,
+                        size: posteosList.size,
+                        message: posteosList.message
+                    });
+                }
+            }else{
+                console.log('No se pudo autenticar la identidad por que el token es incorrecto ');
+                return res.status(500).json({
+                    message: 'No se pudo autenticar la identidad'
+                });
+            }
+            return response;
+        } catch(error){
+            console.log('No se pudo autenticar la identidad: ', error);
+            return res.status(500).json({
+                message: 'No se pudo autenticar la identidad'
+            });
+        }
+    } else {
+        return res.status(500).json({
+            message: 'Error request by bad token'
+        });
+    }
+}
+
 
 
 
@@ -255,5 +302,6 @@ module.exports = {
     likeCount,
     getFriendsPostController,
     findUserByName,
-    findUsersByType
+    findUsersByType,
+    findPosteosByType
 }
