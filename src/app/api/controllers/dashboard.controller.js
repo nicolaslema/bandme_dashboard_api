@@ -3,10 +3,6 @@ const Api400Error = require('../../helpers/httpErrors/api400Error');
 const Api404Error = require('../../helpers/httpErrors/api404Error');
 const dashboardService = require('../../services/dashboard.service');
 
-//TODO:Agregar Verificacion
-
-
-
 const likePost = async(req, res = resposne)=>{
     //user_id = id del usuario que realiza el LIKE al post
     //id = id del post al que el usuario dio LIKE
@@ -112,10 +108,10 @@ const findUserByName = async(req, res = response) => {
     const {username, lastName} = req.body;
     console.log('token recibido desde el body controller: '+token);
     if(token != undefined) {
-        try{ //----> AGREGAR ESTA VALIDACION
+        try{
             const {uid} = await dashboardService.decodeToken(token);
             console.log('RESULTADO DESDE CONTROLLER: ' + JSON.stringify(uid));
-            if(uid != '' && uid != undefined && uid != null){ //----> AGREGAR ESTA VALIDACION
+            if(uid != '' && uid != undefined && uid != null){
                 const userWanted = await dashboardService.findUserByName(username, lastName, uid);
                 let response;
                 if(userWanted.exist){
@@ -156,10 +152,10 @@ const findUsersByType = async(req, res = response) => {
     const {type} = req.body;
     console.log('token recibido desde el body controller: '+token);
     if(token != undefined) {
-        try{ //----> AGREGAR ESTA VALIDACION
+        try{ 
             const {uid} = await dashboardService.decodeToken(token);
             console.log('RESULTADO DESDE CONTROLLER: ' + JSON.stringify(uid));
-            if(uid != '' && uid != undefined && uid != null){ //----> AGREGAR ESTA VALIDACION
+            if(uid != '' && uid != undefined && uid != null){ 
                 const usersList = await dashboardService.findUsersByType(uid, type);
                 let response;
                 if(usersList.exist){
@@ -203,10 +199,10 @@ const findPosteosByType = async(req, res = response) => {
     console.log('token recibido desde el body controller: '+token);
     console.log('USERTYPE recibido desde el body controller: '+userType);
     if(token != undefined) {
-        try{ //----> AGREGAR ESTA VALIDACION
+        try{
             const {uid} = await dashboardService.decodeToken(token);
             console.log('RESULTADO DESDE CONTROLLER: ' + JSON.stringify(uid));
-            if(uid != '' && uid != undefined && uid != null){ //----> AGREGAR ESTA VALIDACION
+            if(uid != '' && uid != undefined && uid != null){ 
                 const posteosList = await dashboardService.findPosteosByType(uid, type, userType);
                 let response;
                 if(posteosList.exist){
