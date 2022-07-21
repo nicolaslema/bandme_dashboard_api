@@ -2,22 +2,21 @@ require('dotenv').config();
 const express = require('express');
 const cors = require('cors');
 const helmet = require('helmet');
+const {connectDB} = require('./db');
+require('dotenv').config();
 
-
-//TODO: constants file
-
-const rootPath = '/api/v1';
-const app = express();
+const rootPath = '/api/v1/dashboard';
 
 class Server{
 
     constructor(){
         this.app = express();
-        this. port = 8089;
+        this.port = process.env.PORT;
+        this.app = express();
         this.rootPath = rootPath;
         this.initMiddlewares();
         this.routes();
-        //TODO: connectDB
+        connectDB();
     }
 
 
@@ -30,7 +29,7 @@ class Server{
     }
 
     routes(){
-        //this.app.use(this.rootPath, require('../api/components/index/index.routes'));
+        this.app.use(this.rootPath, require('../app/api/routes/dashboard.routes'));
     }
 
 

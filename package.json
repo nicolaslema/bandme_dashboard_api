@@ -17,10 +17,11 @@
     "supertest": "^6.2.2"
   },
   "dependencies": {
+    "axios": "^0.27.2",
     "cors": "^2.8.5",
     "dotenv": "^14.3.2",
     "express": "^4.17.2",
     "helmet": "^5.0.2",
-    "mongoose": "^6.1.8"
+    "mongoose": "^6.4.4"
   }
 }
