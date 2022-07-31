@@ -1,11 +1,11 @@
 {
-  "name": "node_boilerplate_2022",
+  "name": "bandme_dashboard_api",
   "version": "1.0.0",
   "description": "",
   "main": "src/index.js",
   "scripts": {
-    "dev": "cross-env NODE_ENV=development nodemon --inspect=0.0.0.0:9229 src/index.js",
-    "start": "cross-env NODE_ENV=production node src/index.js",
+    "dev": "cross-env NODE_ENV=development nodemon --inspect=0.0.0.0:9229 app",
+    "start": "node app",
     "test": "cross-env NODE_ENV=test jest "
   },
   "author": "",

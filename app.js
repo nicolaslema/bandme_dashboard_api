@@ -1,4 +1,4 @@
-const Server = require('./config/server')
+const Server = require('./app/config/server')
 
 const server = new Server();
 server.listen();

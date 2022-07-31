@@ -29,7 +29,7 @@ class Server{
     }
 
     routes(){
-        this.app.use(this.rootPath, require('../app/api/routes/dashboard.routes'));
+        this.app.use(this.rootPath, require('../api/routes/dashboard.routes'));
     }
 
 

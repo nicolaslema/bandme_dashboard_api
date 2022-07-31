@@ -5,7 +5,7 @@ const res = require('express/lib/response');
 const Api404Error = require('../helpers/httpErrors/api404Error');
 const Api400Error = require('../helpers/httpErrors/api400Error');
 const BaseError = require('../helpers/baseError');
-const httpStatusCodes = require('../../utils/httpErrors.model');
+const httpStatusCodes = require('../utils/httpErrors.model');
 const axios = require('axios').default;
 const User = require('../models/user.model');
 const Post = require('../models/post.model');
@@ -14,12 +14,11 @@ const Post = require('../models/post.model');
 
 class DashboardService {
     
-    
     constructor(){}
 
     async decodeToken(userToken){
         try{
-            const {data:response} = await axios.post('http://localhost:5001/api/v1/login/validate/user-identity', {
+            const {data:response} = await axios.post('https://bandme-login-api.herokuapp.com/api/v1/login/validate/user-identity', {
             token:userToken
         });
             return response;
@@ -317,15 +316,7 @@ class DashboardService {
         return user;
     }
 
-//con el token del usuario lo mando a desencriptar obtengo uid del usuario para ir a buscar a la base de datos su info
 
-//para dashboard , crear una lista de 10 posteos y 10 posteos premium.
-//sortearlo por fecha de creacion
-//mostrar en dashboard feed. 
-//Agregar paginacion
-//Agregar diferenciacion de posteos [banda, artista, establecimiento]
-//
-//Agregar campo bool PREMIUM al modelo de usuario.
 
 
 
