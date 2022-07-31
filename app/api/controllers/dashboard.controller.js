@@ -3,6 +3,9 @@ const Api400Error = require('../../helpers/httpErrors/api400Error');
 const Api404Error = require('../../helpers/httpErrors/api404Error');
 const dashboardService = require('../../services/dashboard.service');
 
+
+
+//Falta likepost 
 const likePost = async(req, res = resposne)=>{
     //user_id = id del usuario que realiza el LIKE al post
     //id = id del post al que el usuario dio LIKE
@@ -262,11 +265,7 @@ const testErrors = async(req, res = response, next) =>{
 
 
 module.exports = {
-    getPosts,
-    createPost,
-    getPost,
-    updatePost,
-    deletePost,
+
     likePost,
     testErrors,
     likeCount,
