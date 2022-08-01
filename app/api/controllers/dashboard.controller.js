@@ -5,13 +5,11 @@ const dashboardService = require('../../services/dashboard.service');
 
 
 
-//Falta likepost 
+
 const likePost = async(req, res = resposne)=>{
-    //user_id = id del usuario que realiza el LIKE al post
-    //id = id del post al que el usuario dio LIKE
+    
     const token = req.headers['auth-token'];
-   
-    if(token != undefined) { //if the token comes in the request
+    if(token != undefined) { 
     try{ 
     const {uid} = await dashboardService.decodeToken(token);
     if(uid != '' && uid != undefined && uid != null){
@@ -27,11 +25,15 @@ const likePost = async(req, res = resposne)=>{
 
     }
     else{
-
+        response = res.status(400).json({
+            exist: false,
+            data: {},
+            message: 'Error al hacer like'
+        });
     }
 
     try {
-        res.status(200).json({likedPost});
+        return res.status(400).json({response});
         
     } catch (error) {
         console.error(error);

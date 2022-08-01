@@ -33,7 +33,9 @@ class DashboardService {
     async likePost(id, userUid){
         let likedPost = {
             exist: false,
-            data: {}
+            data: {},
+            message: '',
+
         };
         if(!mongoose.Types.ObjectId.isValid(id)) return `No post with id: ${id}`;
 
@@ -48,7 +50,13 @@ class DashboardService {
                 post.likes = post.likes.filter((id)=> id !== String(userUid));
             }
             const updatedPost = await postModel.findByIdAndUpdate(id, post, {new: true})
-            return updatedPost;
+            likedPost = {
+                exist: true,
+                data: {updatedPost},
+                message: 'successfull like',
+    
+            };
+            return likedPost;
         } catch (error) {
             console.error(error);
         }
