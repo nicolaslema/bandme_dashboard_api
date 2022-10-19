@@ -1,4 +1,4 @@
-const {Schema, model} = require('mongoose');
+/* const {Schema, model} = require('mongoose');
 
 const PostOldSchema = Schema({
 
@@ -41,4 +41,4 @@ const PostOldSchema = Schema({
 
 })
 
-module.exports = model('PostOld', PostOldSchema);
+module.exports = model('PostOld', PostOldSchema); */

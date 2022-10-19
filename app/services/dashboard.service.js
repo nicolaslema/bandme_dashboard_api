@@ -1,4 +1,4 @@
-const postModel = require('../models/post_old.model');
+//const Post = require('../models/post.model');
 //const PostOld = require('../models/post_old.model');
 const mongoose = require('mongoose');
 const res = require('express/lib/response');
@@ -30,35 +30,56 @@ class DashboardService {
  
 
 //LIKES
-    async likePost(id, userUid){
-        let likedPost = {
+    async likePost(posteoId, userUid){
+        let response = {
             exist: false,
             data: {},
             message: '',
 
         };
-        if(!mongoose.Types.ObjectId.isValid(id)) return `No post with id: ${id}`;
+        //if(!mongoose.Types.ObjectId.isValid(posteoId)) return `No post with id: ${posteoId}`;
 
         try {
-            const post = await postModel.findById(id);
-            //const index = post.likes.findByIndex((id) => id === String(creator));
-            const index = post.likes.indexOf(userUid);
-        
-            if(index === -1){
-                post.likes.push(userUid)
+            //obtengo el posteo by id
+            const posteoDb = await Post.findById(posteoId);
+            console.log("datos del posteo --> " + posteoDb);
+            //verificar si en la lista de likes del posteo se encuentra el uid del usuario y si esta vacia
+            const isUserIdInclude = posteoDb.likes.includes(userUid);
+            console.log("incluye el user id? " + isUserIdInclude);
+            if(!isUserIdInclude){
+                console.log("EL ID NO ESTA INCLUIDO, entonces lo agregamos");
+                posteoDb.likes.push(userUid);
+                console.log("contador de like antes: "+ posteoDb.like_count)
+                posteoDb.like_count = posteoDb.like_count+1
+                console.log("contador de like despues: "+ posteoDb.like_count)
             }else{
-                post.likes = post.likes.filter((id)=> id !== String(userUid));
+                console.log("EL ID ESTA INCLUIDO, entonces lo quitamos")
+                posteoDb.likes = posteoDb.likes.filter(function(e) { return e !== userUid });
+                console.log("contador de like antes: "+ posteoDb.like_count)
+                if(posteoDb.like_count > 0){
+                    posteoDb.like_count = posteoDb.like_count-1
+                    console.log("contador de like despues: "+ posteoDb.like_count)
+                }
             }
-            const updatedPost = await postModel.findByIdAndUpdate(id, post, {new: true})
-            likedPost = {
+            await Post.findOneAndUpdate({ _id: posteoId }, {likes: posteoDb.likes, like_count:posteoDb.like_count});
+            //una vez que ya actualizo, hago un findbyid y traigo los nuevos datos del posteo, envio el id del posteo, la lista de likes y el contador de likes como respuesta
+            const posteoUpdatedDb = await Post.findById(posteoId);
+
+            response = {
                 exist: true,
-                data: {updatedPost},
-                message: 'successfull like',
+                data: posteoUpdatedDb,
+                message: 'Se agrego o quito el like',
     
             };
-            return likedPost;
+            return response;
         } catch (error) {
             console.error(error);
+            response = {
+                exist: false,
+                data: null,
+                message: 'El servicio falló',
+    
+            };
         }
 
     }
@@ -68,7 +89,7 @@ class DashboardService {
         if(!mongoose.Types.ObjectId.isValid(id)) return `No post with id: ${id}`;
 
         try { 
-            const post = await postModel.findById(id);
+            const post = await Post.findById(id);
             console.log(post.likes.length)
             return post.likes.length
         
