@@ -4,52 +4,41 @@ const Api404Error = require('../../helpers/httpErrors/api404Error');
 const dashboardService = require('../../services/dashboard.service');
 
 
-
-
 const likePost = async(req, res = resposne)=>{
-    
     const token = req.headers['auth-token'];
+    const {posteoId} = req.body;
     if(token != undefined) { 
-    try{ 
-    const {uid} = await dashboardService.decodeToken(token);
-    if(uid != '' && uid != undefined && uid != null){
-    const likedPost = await dashboardService.likePost(id, uid);
-    let response;
-      if(likePost.exist){
-        response = res.status(200).json({
-            exist: likedPost.exist,
-            data: likedPost.data,
-            message: likedPost.message
+        try{ 
+            const {uid} = await dashboardService.decodeToken(token);
+            if(uid != '' && uid != undefined && uid != null){
+                const likedPost = await dashboardService.likePost(posteoId, uid);
+                let response;
+                if(likedPost.exist){
+                    response = res.status(200).json({
+                        exist: likedPost.exist,
+                        data: likedPost.data,
+                        message: likedPost.message
+                    });
+                }  
+            }
+            else{
+                response = res.status(400).json({
+                    exist: likedPost.exist,
+                    data: likedPost.data,
+                    message: likedPost.message
+                });
+            }
+        } catch(error){
+            console.log('No se pudo autenticar la identidad: ', error);
+            return res.status(500).json({
+                message: 'No se pudo autenticar la identidad'
+            });
+        }
+    } else {
+        return res.status(401).json({
+            message: 'Error request by bad token'
         });
-      }  
-
     }
-    else{
-        response = res.status(400).json({
-            exist: false,
-            data: {},
-            message: 'Error al hacer like'
-        });
-    }
-
-    try {
-        return res.status(400).json({response});
-        
-    } catch (error) {
-        console.error(error);
-    }
-
-} catch(error){
-    console.log('No se pudo autenticar la identidad: ', error);
-    return res.status(500).json({
-        message: 'No se pudo autenticar la identidad'
-    });
-}
-} else {
-    return res.status(400).json({
-        message: 'Error request by bad token'
-    });
-}
 }
 
 
@@ -102,7 +91,7 @@ const getFriendsPostController = async(req, res = response) => {
         });
     }
     } else {
-        return res.status(400).json({
+        return res.status(401).json({
             message: 'Error request by bad token'
         });
     }
@@ -192,7 +181,7 @@ const findUsersByType = async(req, res = response) => {
             });
         }
     } else {
-        return res.status(500).json({
+        return res.status(401).json({
             message: 'Error request by bad token'
         });
     }
@@ -239,7 +228,7 @@ const findPosteosByType = async(req, res = response) => {
             });
         }
     } else {
-        return res.status(500).json({
+        return res.status(401).json({
             message: 'Error request by bad token'
         });
     }

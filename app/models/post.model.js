@@ -34,13 +34,10 @@ const PostSchema = Schema({
     },
     likes: { 
         type: [String],
-        default: []
-        
-},
-
+        default: []    
+    },
     like_count:{
-        type: Number,
-        default: 0
+        type: Number
 },
 });
 

@@ -6,7 +6,7 @@ const router = express.Router();
 
 
 
-router.patch('/likePost', likePost);
+router.post('/likePost', likePost);
 router.post('/testError', testErrors);
 router.post('/getLikes', likeCount);
 
