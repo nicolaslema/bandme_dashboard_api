@@ -130,7 +130,7 @@ class DashboardService {
             for( const friend of friend_list) {
                 for( const idPosteo of friend.post_list ) {
                     const userPostDb = await Post.findById(idPosteo);
-                    const {image_url, id_owner} = userPostDb;
+                    const {image_url, id_owner, likes, like_count} = userPostDb;
                     //buscar profile photo del owner y agregar, de esta forma se mantiene la imagen del perfil actualizada, y no la guardada cuando se agrego a la lista de amigos, por que puede que la haya actualizado
                     const ownerProfile = await User.findById(id_owner);
                     const { profile_photo } = ownerProfile
@@ -142,7 +142,9 @@ class DashboardService {
                         last_name: friend.last_name,
                         isPremium: friend.isPremium,
                         post_image_url: image_url,
-                        owner_profile_photo: profile_photo
+                        owner_profile_photo: profile_photo,
+                        likes: likes,
+                        like_count: like_count
                     };
                     listadoGeneralPosteosPromesa.push(posteo);
                 }
