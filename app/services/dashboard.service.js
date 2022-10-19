@@ -35,10 +35,10 @@ class DashboardService {
             exist: false,
             data: {},
             message: '',
-
+            isLike: false
         };
         //if(!mongoose.Types.ObjectId.isValid(posteoId)) return `No post with id: ${posteoId}`;
-
+        let isLike = false;
         try {
             //obtengo el posteo by id
             const posteoDb = await Post.findById(posteoId);
@@ -52,6 +52,7 @@ class DashboardService {
                 console.log("contador de like antes: "+ posteoDb.like_count)
                 posteoDb.like_count = posteoDb.like_count+1
                 console.log("contador de like despues: "+ posteoDb.like_count)
+                isLike = true;
             }else{
                 console.log("EL ID ESTA INCLUIDO, entonces lo quitamos")
                 posteoDb.likes = posteoDb.likes.filter(function(e) { return e !== userUid });
@@ -59,29 +60,31 @@ class DashboardService {
                 if(posteoDb.like_count > 0){
                     posteoDb.like_count = posteoDb.like_count-1
                     console.log("contador de like despues: "+ posteoDb.like_count)
+                    isLike = false;
                 }
             }
             await Post.findOneAndUpdate({ _id: posteoId }, {likes: posteoDb.likes, like_count:posteoDb.like_count});
             //una vez que ya actualizo, hago un findbyid y traigo los nuevos datos del posteo, envio el id del posteo, la lista de likes y el contador de likes como respuesta
             const posteoUpdatedDb = await Post.findById(posteoId);
 
+
             response = {
                 exist: true,
-                data: posteoUpdatedDb,
+                data: {
+                    posteo: posteoUpdatedDb,
+                    isLike: isLike
+                },
                 message: 'Se agrego o quito el like',
-    
             };
-            return response;
         } catch (error) {
             console.error(error);
             response = {
                 exist: false,
                 data: null,
                 message: 'El servicio falló',
-    
             };
         }
-
+        return response;
     }
 
 //COUNT LIKES
