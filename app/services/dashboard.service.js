@@ -135,6 +135,8 @@ class DashboardService {
                     const ownerProfile = await User.findById(id_owner);
                     const { profile_photo } = ownerProfile
 
+                    const isLikeByUser = likes.includes(userUid);
+
                     const posteo = {
                         uid_posteo: idPosteo,
                         uid_owner: id_owner,
@@ -144,7 +146,8 @@ class DashboardService {
                         post_image_url: image_url,
                         owner_profile_photo: profile_photo,
                         likes: likes,
-                        like_count: like_count
+                        like_count: like_count,
+                        is_like_by_user: isLikeByUser
                     };
                     listadoGeneralPosteosPromesa.push(posteo);
                 }
