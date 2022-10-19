@@ -27,6 +27,54 @@ class DashboardService {
         }
     }
     
+
+    //GET POSTEO BY ID
+    async getPosteoById(posteoId){
+        let response = {
+            exist: false,
+            data: {},
+            message: {}
+        }
+        try{
+            const posteoDb = await Post.findById(posteoId);
+            console.log("datos del posteo --> " + posteoDb);
+            const { id_owner, title, image_url, date, time, street, street_number, description, like_count } = posteoDb;
+            const ownerProfile = await User.findById(id_owner);
+            console.log("datos del owner --> " + ownerProfile);
+            const { profile_photo, first_name, last_name, email } = ownerProfile;
+
+            const posteoDetails = {
+                id_owner: id_owner,
+                title: title,
+                image_url: image_url, // puede ir null
+                date: date,
+                time: time,
+                street: street, // puede ir null
+                street_number: street_number, // puede ir null
+                description: description,
+                like_count: like_count,
+                profile_photo: profile_photo, // puede ir null
+                first_name: first_name, // puede ir null
+                last_name: last_name, //puede ir null
+                email: email 
+            };
+
+            response = {
+                exist: true,
+                data: posteoDetails,
+                message: "Detalles del posteo encontrado"
+            }
+
+        }catch(error){
+            console.error(error);
+            response = {
+                exist: false,
+                data: null,
+                message: 'El servicio falló, verifique el id del posteo',
+            };
+        }
+        return response;
+    }
  
 
 //LIKES

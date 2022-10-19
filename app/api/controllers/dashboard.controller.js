@@ -234,6 +234,41 @@ const findPosteosByType = async(req, res = response) => {
     }
 }
 
+const getPostDetails = async(req, res = response) => {
+    const posteoId = req.query.posteoId;
+
+    if(posteoId != null && posteoId != undefined && posteoId != ""){
+        console.log('posteoID recibido desde el body controller: '+posteoId);
+        try{
+            const posteo = await dashboardService.getPosteoById(posteoId);
+            let response;
+            if(posteo.exist){
+                response = res.status(200).json({
+                    exist: posteo.exist,
+                    data: posteo.data,
+                    message: posteo.message
+                });
+            } else {
+                response = res.status(400).json({
+                    exist: posteo.exist,
+                    data: posteo.data,
+                    message: posteo.message
+                });
+            }
+        return response;
+        } catch(error){
+            console.log('No se pudo encontrar el posteo: ', error);
+            return res.status(500).json({
+                message: 'No se pudo encontrar el posteo'
+            });
+        }
+    }else{
+        return res.status(404).json({
+            message: 'No se pudo encontrar el posteo, verifique la url'
+        });
+    }
+}
+
 
 
 
@@ -255,6 +290,7 @@ const testErrors = async(req, res = response, next) =>{
 
 
 
+
 module.exports = {
 
     likePost,
@@ -263,5 +299,6 @@ module.exports = {
     getFriendsPostController,
     findUserByName,
     findUsersByType,
-    findPosteosByType
+    findPosteosByType,
+    getPostDetails
 }
