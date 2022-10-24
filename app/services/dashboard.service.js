@@ -39,7 +39,7 @@ class DashboardService {
             console.log("POSTEO ID --> " +posteoId)
             const posteoDb = await Post.findById(posteoId);
             console.log("datos del posteo --> " + posteoDb);
-            const { id_owner, title, image_url, date, time, street, street_number, description, like_count } = posteoDb;
+            const { id_owner, title, image_url, date, time, street, street_number, description, postal_code, checkbox, like_count } = posteoDb;
             const ownerProfile = await User.findById(id_owner);
             console.log("datos del owner --> " + ownerProfile);
             const { profile_photo, first_name, last_name, email } = ownerProfile;
@@ -57,7 +57,9 @@ class DashboardService {
                 profile_photo: profile_photo, // puede ir null
                 first_name: first_name, // puede ir null
                 last_name: last_name, //puede ir null
-                email: email 
+                email: email,
+                postal_code: postal_code,
+                checkbox: checkbox 
             };
 
             response = {
