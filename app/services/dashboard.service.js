@@ -36,6 +36,7 @@ class DashboardService {
             message: {}
         }
         try{
+            console.log("POSTEO ID --> " +posteoId)
             const posteoDb = await Post.findById(posteoId);
             console.log("datos del posteo --> " + posteoDb);
             const { id_owner, title, image_url, date, time, street, street_number, description, like_count } = posteoDb;

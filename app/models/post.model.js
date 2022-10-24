@@ -38,7 +38,7 @@ const PostSchema = Schema({
     },
     like_count:{
         type: Number
-},
+    },
 });
 
 const Post = model('Post', PostSchema);
