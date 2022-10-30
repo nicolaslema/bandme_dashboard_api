@@ -27,6 +27,33 @@ class DashboardService {
         }
     }
     
+    async findPosteByType(uid, type){
+
+        console.log("id del usuario actual: "+ uid + " // type: " + type);
+
+        let posteosList = {
+            exist: false,
+            data: {},
+            message: '',
+            size: 0
+        };
+
+        process.env.TZ = 'America/Argentina/Buenos_Aires';
+        const currentDate = new Date();
+        console.log("Fecha actual: "+ currentDate);
+
+        let day = ("0" + currentDate.getDate()).slice(-2);
+
+        // current month
+        let month = ("0" + (currentDate.getMonth() + 1)).slice(-2);
+
+        // current year
+        let year = currentDate.getFullYear();
+
+        console.log("Dia: "+day +" //" + "mes: "+month +" //" + "anio: "+year +" //");
+
+    }
+    
 
     //GET POSTEO BY ID
     async getPosteoById(posteoId){

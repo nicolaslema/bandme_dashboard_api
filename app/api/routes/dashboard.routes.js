@@ -1,5 +1,5 @@
 const express = require('express');
-const {likeCount,likePost, testErrors, getFriendsPostController, findUserByName, findUsersByType, findPosteosByType, getPostDetails } = require('../controllers/dashboard.controller')
+const {likeCount,likePost, testErrors, getFriendsPostController, findUserByName, findUsersByType, findPosteosByType, getPostDetails, findPosteByType } = require('../controllers/dashboard.controller')
 
 const router = express.Router();
 
@@ -15,5 +15,7 @@ router.post('/find-users-type', findUsersByType);
 router.post('/find-posteos-type', findPosteosByType);
 
 router.get('/get-post-details', getPostDetails);
+
+router.post('/find-post-by-type', findPosteByType);
 
 module.exports = router;
