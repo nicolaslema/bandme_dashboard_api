@@ -270,6 +270,59 @@ const getPostDetails = async(req, res = response) => {
 }
 
 
+const findPosteByType = async(req, res = response) => {
+    const token = req.headers['auth-token'];
+    const {type} = req.body;
+
+    if(type != null && type != undefined && type != ""){
+        console.log('type recibido desde el body controller: '+type);
+        if(token != undefined) {
+            try{
+                const {uid} = await dashboardService.decodeToken(token);
+                console.log('RESULTADO DESDE CONTROLLER: ' + JSON.stringify(uid));
+                if(uid != '' && uid != undefined && uid != null){ 
+                    const posteosList = await dashboardService.findPosteByType(uid, type);
+                    /* let response;
+                    if(posteosList.exist){
+                        response = res.status(200).json({
+                            exist: posteosList.exist,
+                            data: posteosList.data,
+                            size: posteosList.size,
+                            message: posteosList.message
+                        });
+                    } else {
+                        response = res.status(400).json({
+                            exist: posteosList.exist,
+                            data: posteosList.data,
+                            size: posteosList.size,
+                            message: posteosList.message
+                        });
+                    } */
+                    res.send("Holissss")
+                }else{
+                    console.log('No se pudo autenticar la identidad por que el token es incorrecto ');
+                    return res.status(500).json({
+                        message: 'No se pudo autenticar la identidad'
+                    });
+                }
+                return response;
+            } catch(error){
+                console.log('No se pudo autenticar la identidad: ', error);
+                return res.status(500).json({
+                    message: 'No se pudo autenticar la identidad'
+                });
+            }
+        } else {
+            return res.status(401).json({
+                message: 'Error request by bad token'
+            });
+        }
+    }else{
+        return res.status(404).json({
+            message: 'No se pudo encontrar el posteo, verifique la url'
+        });
+    }
+}
 
 
 
@@ -300,5 +353,6 @@ module.exports = {
     findUserByName,
     findUsersByType,
     findPosteosByType,
-    getPostDetails
+    getPostDetails,
+    findPosteByType
 }
