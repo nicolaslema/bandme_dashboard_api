@@ -9,7 +9,7 @@ const httpStatusCodes = require('../utils/httpErrors.model');
 const axios = require('axios').default;
 const User = require('../models/user.model');
 const Post = require('../models/post.model');
-
+const moment = require('moment');
 
 
 class DashboardService {
@@ -26,6 +26,28 @@ class DashboardService {
             console.log("Error catch: " + error);
         }
     }
+
+    async compareDates(fechaPosteo){
+        process.env.TZ = 'America/Argentina/Buenos_Aires';
+        const currentDate = new Date();
+        console.log("Fecha actual: "+ currentDate);
+        let day = ("0" + currentDate.getDate()).slice(-2);
+        // current month
+        let month = ("0" + (currentDate.getMonth() + 1)).slice(-2);
+        // current year
+        let year = currentDate.getFullYear();
+        const fechaActualParseada = day+"/"+month+"/"+year;
+
+        const momentCurrentDate = moment(fechaActualParseada.toString(), "DD/MM/YYYY");
+        console.log("momentCurrentDate ->> " + momentCurrentDate);
+
+        const momentFechaPosteo = moment(fechaPosteo, "DD/MM/YYYY");
+        console.log("valor ->> " + momentFechaPosteo);
+
+        const isSameOrAfter = moment(momentFechaPosteo).isSameOrAfter(momentCurrentDate);
+        console.log("fecha de posteo es igual o mayor a la fecha actual? " + isSameOrAfter);
+        return isSameOrAfter;
+    }
     
     async findPosteByType(uid, type){
 
@@ -38,19 +60,91 @@ class DashboardService {
             size: 0
         };
 
-        process.env.TZ = 'America/Argentina/Buenos_Aires';
-        const currentDate = new Date();
-        console.log("Fecha actual: "+ currentDate);
+        //Aca busca la lista de usuarios que no incluyen al usuario que consulta
+        /* const userList = await User.distinct('_id', {'id':!uid});
+        console.log("lista de usuarios: " + userList);
+        console.log("==========================");
+        const userListIdDistinctToMe = userList.filter(element => element != uid);
+        console.log("lista de usuarios que no contienen mi id: " + userListIdDistinctToMe); */
 
-        let day = ("0" + currentDate.getDate()).slice(-2);
 
-        // current month
-        let month = ("0" + (currentDate.getMonth() + 1)).slice(-2);
 
-        // current year
-        let year = currentDate.getFullYear();
+        //Buscar todos los posteos y excluir aquellos que no coinciden uid != id_owner
+        const posteosListDb = await Post.find();
+        const posteosListDistinctToMine = await posteosListDb.filter(element => element.id_owner != uid);
 
-        console.log("Dia: "+day +" //" + "mes: "+month +" //" + "anio: "+year +" //");
+        //Recorrer la lista de posteos y filtrar por fechas, hacer una nueva lista con aquellos cuya fecha sea igual o mayor a la actual
+        const posteosFiltradosPorFecha = await posteosListDistinctToMine.filter(function(element){
+            console.log(element.date);
+        });
+        
+        /* const posteosListFilterByType = await posteosListDistinctToMine.filter(function(element){
+            if(type == "advertising"){
+                if(element.checkbox.advertising == "true"){
+                    return element;
+                }
+            } else if(type == "search"){
+                if(element.checkbox.search == "true"){
+                    return element;
+                }
+            } else if(type == "event") {
+                if(element.checkbox.event == "true"){
+                    return element;
+                }
+            } else{
+                console.log("elemento que NO coincide con el type")
+            }
+         });
+
+        const listaIdOwnersDeLosPosteos = posteosListFilterByType.filter((value, index, self) =>
+            index === self.findIndex((t) => (
+                t.id_owner === value.id_owner && t.id_owner === value.id_owner //quito los id owner repetidos, asi solo hago las busquedas justas y necesarias a la base
+            ))
+        );
+
+        let listaOwnerYTipoPromise = [];
+
+        for( const element of listaIdOwnersDeLosPosteos) {
+            const ownerData = await User.findById(element.id_owner);
+            const { isPremium } = ownerData;
+            
+            const idOwnerAndType = {
+                id_owner:element.id_owner,
+                isPremium: isPremium
+            }
+            listaOwnerYTipoPromise.push(idOwnerAndType);
+        }
+        const idOwnersAndTypeList = await Promise.all(listaOwnerYTipoPromise);
+
+        let listaPremiumPromise = [];
+        let listaBasicaPromise = [];
+
+        for(const posteo of posteosListFilterByType){
+            idOwnersAndTypeList.map(element => {
+                if(element.id_owner == posteo.id_owner){
+                    if(element.isPremium == true){
+                        const posteoConType = {
+                            posteo: posteo,
+                            isPremium: element.isPremium
+                        }
+                        listaPremiumPromise.push(posteoConType);
+                    }else{
+                        const posteoConType = {
+                            posteo: posteo,
+                            isPremium: element.isPremium
+                        }
+                        listaBasicaPromise.push(posteoConType);
+                    };
+                };
+            });
+        };
+
+        const listaPremium = await Promise.all(listaPremiumPromise);
+        const listaBasica = await Promise.all(listaBasicaPromise);
+
+        const mergePosteosListasOrdenadas = [...listaPremium, ...listaBasica];
+
+        mergePosteosListasOrdenadas.map(element => console.log("ELEMENTOS ORDENADAS POR TIPO: " + element.posteo.date)); */
 
     }
     
