@@ -282,7 +282,7 @@ const findPosteByType = async(req, res = response) => {
                 console.log('RESULTADO DESDE CONTROLLER: ' + JSON.stringify(uid));
                 if(uid != '' && uid != undefined && uid != null){ 
                     const posteosList = await dashboardService.findPosteByType(uid, type);
-                    /* let response;
+                    let response;
                     if(posteosList.exist){
                         response = res.status(200).json({
                             exist: posteosList.exist,
@@ -297,8 +297,7 @@ const findPosteByType = async(req, res = response) => {
                             size: posteosList.size,
                             message: posteosList.message
                         });
-                    } */
-                    res.send("Holissss")
+                    }
                 }else{
                     console.log('No se pudo autenticar la identidad por que el token es incorrecto ');
                     return res.status(500).json({
