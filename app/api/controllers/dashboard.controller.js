@@ -273,49 +273,43 @@ const findUserByWord = async(req, res = response) => {
     const token = req.headers['auth-token'];
     const {first_name, last_name, user_type} = req.body;
 
-    if(first_name != null && first_name != undefined && first_name != ""){
-        console.log('first name y userType recibido desde el body controller: '+ first_name);
-        if(token != undefined) {
-            try{
-                const {uid} = await dashboardService.decodeToken(token);
-                console.log('RESULTADO DESDE CONTROLLER: ' + JSON.stringify(uid));
-                if(uid != '' && uid != undefined && uid != null){ 
-                    const usersMatchesList = await dashboardService.findUserByWord(uid, first_name, last_name, user_type);
-                    let response;
-                    if(usersMatchesList.exist){
-                        response = res.status(200).json({
-                            exist: usersMatchesList.exist,
-                            data: usersMatchesList.data,
-                            message: usersMatchesList.message
-                        });
-                    } else {
-                        response = res.status(400).json({
-                            exist: usersMatchesList.exist,
-                            data: usersMatchesList.data,
-                            message: usersMatchesList.message
-                        });
-                    }
-                }else{
-                    console.log('No se pudo autenticar la identidad por que el token es incorrecto ');
-                    return res.status(500).json({
-                        message: 'No se pudo autenticar la identidad'
+    console.log('first name y userType recibido desde el body controller: '+ first_name, user_type);
+    if(token != undefined) {
+        try{
+            const {uid} = await dashboardService.decodeToken(token);
+            console.log('RESULTADO DESDE CONTROLLER: ' + JSON.stringify(uid));
+            if(uid != '' && uid != undefined && uid != null){ 
+                const usersMatchesList = await dashboardService.findUserByWord(uid, first_name, last_name, user_type);
+                let response;
+                if(usersMatchesList.exist){
+                    response = res.status(200).json({
+                        exist: usersMatchesList.exist,
+                        data: usersMatchesList.data,
+                        message: usersMatchesList.message
+                    });
+                } else {
+                    response = res.status(400).json({
+                        exist: usersMatchesList.exist,
+                        data: usersMatchesList.data,
+                        message: usersMatchesList.message
                     });
                 }
-                return response;
-            } catch(error){
-                console.log('No se pudo autenticar la identidad: ', error);
+            }else{
+                console.log('No se pudo autenticar la identidad por que el token es incorrecto ');
                 return res.status(500).json({
                     message: 'No se pudo autenticar la identidad'
                 });
             }
-        } else {
-            return res.status(401).json({
-                message: 'Error request by bad token'
+            return response;
+        } catch(error){
+            console.log('No se pudo autenticar la identidad: ', error);
+            return res.status(500).json({
+                message: 'No se pudo autenticar la identidad'
             });
         }
-    }else{
-        return res.status(404).json({
-            message: 'No se pudo encontrar el usuario, verifique la url y los campos enviados'
+    } else {
+        return res.status(401).json({
+            message: 'Error request by bad token'
         });
     }
 }
