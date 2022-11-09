@@ -551,7 +551,7 @@ class DashboardService {
     }
 
 
-    async findUserByWord(userUid, first_name, last_name, user_type){
+    async findUserByWord(userUid, first_name, last_name, user_type, email){
         let response = {
             exist: false,
             data: {},
@@ -563,6 +563,13 @@ class DashboardService {
 
             let isLastName = false
             let isUserType = false
+            let isEmail = false
+
+            if(email != "" && email != undefined && email != null){
+                isEmail = true
+            }else{
+                isEmail = false
+            }
     
             if(last_name != "" && last_name != undefined && last_name != null){
                 if(user_type != "" && user_type != undefined && user_type != null){
@@ -580,30 +587,36 @@ class DashboardService {
                 }
             }
     
-             if(isLastName && isUserType){
-                //ambos true
+             if(isEmail == true){
                 userMatches = await User.find({ 
-                    'first_name' : { '$regex' : first_name, '$options' : 'i' },
-                    'last_name' : { '$regex' : last_name, '$options' : 'i' },
-                    'user_type' : { '$regex' : user_type, '$options' : 'i' }
-                  })
-             }else if(isLastName == false && isUserType == true){
-                //user type true
-                userMatches = await User.find({ 
-                    'first_name' : { '$regex' : first_name, '$options' : 'i' },
-                    'user_type' : { '$regex' : user_type, '$options' : 'i' }
-                  })
-             }else if(isLastName == true && isUserType == false){
-                //last name true
-                userMatches = await User.find({ 
-                    'first_name' : { '$regex' : first_name, '$options' : 'i' },
-                    'last_name' : { '$regex' : last_name, '$options' : 'i' },
-                  })
-             } else{
-                //ambos false, buscar solo first name
-                userMatches = await User.find({ 
-                    'first_name' : { '$regex' : first_name, '$options' : 'i' },
-                })
+                    'email' : { '$regex' : email, '$options' : 'i' },
+                });
+             }else{
+                if(isLastName && isUserType){
+                    //ambos true
+                    userMatches = await User.find({ 
+                        'first_name' : { '$regex' : first_name, '$options' : 'i' },
+                        'last_name' : { '$regex' : last_name, '$options' : 'i' },
+                        'user_type' : { '$regex' : user_type, '$options' : 'i' }
+                      })
+                 }else if(isLastName == false && isUserType == true){
+                    //user type true
+                    userMatches = await User.find({ 
+                        'first_name' : { '$regex' : first_name, '$options' : 'i' },
+                        'user_type' : { '$regex' : user_type, '$options' : 'i' }
+                      })
+                 }else if(isLastName == true && isUserType == false){
+                    //last name true
+                    userMatches = await User.find({ 
+                        'first_name' : { '$regex' : first_name, '$options' : 'i' },
+                        'last_name' : { '$regex' : last_name, '$options' : 'i' },
+                      })
+                 } else{
+                    //ambos false, buscar solo first name
+                    userMatches = await User.find({ 
+                        'first_name' : { '$regex' : first_name, '$options' : 'i' },
+                    })
+                 }
              }
             console.log("resultados -->> ", userMatches);
 

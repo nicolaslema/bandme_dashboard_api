@@ -271,7 +271,7 @@ const getPostDetails = async(req, res = response) => {
 
 const findUserByWord = async(req, res = response) => {
     const token = req.headers['auth-token'];
-    const {first_name, last_name, user_type} = req.body;
+    const {first_name, last_name, user_type, email} = req.body;
 
     console.log('first name y userType recibido desde el body controller: '+ first_name, user_type);
     if(token != undefined) {
@@ -279,7 +279,7 @@ const findUserByWord = async(req, res = response) => {
             const {uid} = await dashboardService.decodeToken(token);
             console.log('RESULTADO DESDE CONTROLLER: ' + JSON.stringify(uid));
             if(uid != '' && uid != undefined && uid != null){ 
-                const usersMatchesList = await dashboardService.findUserByWord(uid, first_name, last_name, user_type);
+                const usersMatchesList = await dashboardService.findUserByWord(uid, first_name, last_name, user_type, email);
                 let response;
                 if(usersMatchesList.exist){
                     response = res.status(200).json({
