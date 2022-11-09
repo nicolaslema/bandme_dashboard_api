@@ -1,5 +1,5 @@
 const express = require('express');
-const {likeCount,likePost, testErrors, getFriendsPostController, findUserByName, findUsersByType, findPosteosByType, getPostDetails, findPosteByType, findUserByWord } = require('../controllers/dashboard.controller')
+const {likeCount,likePost, testErrors, getFriendsPostController, findUserByName, validateFriend,findUsersByType, findPosteosByType, getPostDetails, findPosteByType, findUserByWord } = require('../controllers/dashboard.controller')
 
 const router = express.Router();
 
@@ -18,5 +18,6 @@ router.get('/get-post-details', getPostDetails);
 
 router.post('/find-post-by-type', findPosteByType);
 router.post('/find-user-by-word', findUserByWord);
+router.post('/is-my-friend', validateFriend)
 
 module.exports = router;

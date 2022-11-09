@@ -169,6 +169,42 @@ class DashboardService {
 
     }
     
+    async validateFriend(userId, idFriend){
+        let response = {
+            exist: false,
+            data: {},
+            message: {}
+        }
+
+        try{
+            //busco datos del user id y traigo su lista de amigos, luego comparo si el IdFriend se encuentra dentro de la lista y devuelvo resultado
+            const ownerProfile = await User.findById(userId);
+            const { friend_list } = ownerProfile;
+            const result = friend_list.filter(elemento => elemento._id == idFriend);
+            if(result != null && result != "" && result.length != 0 && result != undefined){
+                response = {
+                    exist: true,
+                    data: result,
+                    message: 'Existe el id friend en mi lista de amigos',
+                };
+                
+            }else{
+                response = {
+                    exist: false,
+                    data: {},
+                    message: 'No existe el id friend en mi lista de amigos',
+                };
+            }
+        }catch(error){
+            console.error(error);
+            response = {
+                exist: false,
+                data: null,
+                message: 'El servicio falló, verifique el id del amigo a consultar',
+            };
+        }
+        return response;
+    }
 
     //GET POSTEO BY ID
     async getPosteoById(posteoId){
