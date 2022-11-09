@@ -269,6 +269,49 @@ const getPostDetails = async(req, res = response) => {
     }
 }
 
+const validateFriend = async(req, res = response) => {
+    const token = req.headers['auth-token'];
+    const {id_friend} = req.body;
+    if(token != undefined) {
+        try{
+            const {uid} = await dashboardService.decodeToken(token);
+            console.log('RESULTADO DESDE CONTROLLER: ' + JSON.stringify(uid));
+            if(uid != '' && uid != undefined && uid != null){ 
+                const validateUserFriend = await dashboardService.validateFriend(uid, id_friend);
+                let response;
+                if(validateUserFriend.exist){
+                    response = res.status(200).json({
+                        exist: validateUserFriend.exist,
+                        data: validateUserFriend.data,
+                        message: validateUserFriend.message
+                    });
+                } else {
+                    response = res.status(400).json({
+                        exist: validateUserFriend.exist,
+                        data: validateUserFriend.data,
+                        message: validateUserFriend.message
+                    });
+                }
+            }else{
+                console.log('No se pudo autenticar la identidad por que el token es incorrecto ');
+                return res.status(500).json({
+                    message: 'No se pudo autenticar la identidad'
+                });
+            }
+            return response;
+        } catch(error){
+            console.log('No se pudo autenticar la identidad: ', error);
+            return res.status(500).json({
+                message: 'No se pudo autenticar la identidad'
+            });
+        }
+    } else {
+        return res.status(401).json({
+            message: 'Error request by bad token'
+        });
+    }
+}
+
 const findUserByWord = async(req, res = response) => {
     const token = req.headers['auth-token'];
     const {first_name, last_name, user_type, email} = req.body;
@@ -399,5 +442,6 @@ module.exports = {
     findPosteosByType,
     getPostDetails,
     findPosteByType,
-    findUserByWord
+    findUserByWord,
+    validateFriend
 }
