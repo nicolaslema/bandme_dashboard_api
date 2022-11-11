@@ -275,7 +275,7 @@ const validateFriend = async(req, res = response) => {
     if(token != undefined) {
         try{
             const {uid} = await dashboardService.decodeToken(token);
-            console.log('RESULTADO DESDE CONTROLLER: ' + JSON.stringify(uid));
+            console.log('ID FRIEND DESDE CONTROLLER: ' + JSON.stringify(id_friend));
             if(uid != '' && uid != undefined && uid != null){ 
                 const validateUserFriend = await dashboardService.validateFriend(uid, id_friend);
                 let response;
@@ -286,7 +286,7 @@ const validateFriend = async(req, res = response) => {
                         message: validateUserFriend.message
                     });
                 } else {
-                    response = res.status(400).json({
+                    response = res.status(200).json({
                         exist: validateUserFriend.exist,
                         data: validateUserFriend.data,
                         message: validateUserFriend.message
