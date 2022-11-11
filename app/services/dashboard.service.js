@@ -184,7 +184,7 @@ class DashboardService {
             if(result != null && result != "" && result.length != 0 && result != undefined){
                 response = {
                     exist: true,
-                    data: result,
+                    data: result[0],
                     message: 'Existe el id friend en mi lista de amigos',
                 };
                 
