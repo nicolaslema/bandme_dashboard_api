@@ -3,8 +3,6 @@ const {likeCount,likePost, testErrors, getFriendsPostController, findUserByName,
 
 const router = express.Router();
 
-
-
 router.post('/likePost', likePost);
 router.post('/testError', testErrors);
 router.post('/getLikes', likeCount);
