@@ -14,7 +14,7 @@ const PostSchema = Schema({
     street_number: {
         type: String
     },
-    postal_code: {
+    province: {
         type: String
     },
     description: {
