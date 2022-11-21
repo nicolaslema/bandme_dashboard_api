@@ -31,7 +31,6 @@ class DashboardService {
     async compareDates(fechaPosteo){
         process.env.TZ = 'America/Argentina/Buenos_Aires';
         const currentDate = new Date();
-        //console.log("Fecha actual: "+ currentDate);
         let day = ("0" + currentDate.getDate()).slice(-2);
         // current month
         let month = ("0" + (currentDate.getMonth() + 1)).slice(-2);
@@ -40,13 +39,10 @@ class DashboardService {
         const fechaActualParseada = day+"/"+month+"/"+year;
 
         const momentCurrentDate = moment(fechaActualParseada.toString(), "DD/MM/YYYY");
-        //console.log("momentCurrentDate ->> " + momentCurrentDate);
 
         const momentFechaPosteo = moment(fechaPosteo, "DD/MM/YYYY");
-        //console.log("valor ->> " + momentFechaPosteo);
 
         const isSameOrAfter = moment(momentFechaPosteo).isSameOrAfter(momentCurrentDate);
-        //console.log("fecha de posteo es igual o mayor a la fecha actual? " + isSameOrAfter);
         return isSameOrAfter;
     }
     
@@ -59,11 +55,9 @@ class DashboardService {
         };
 
         try{
-            //Buscar todos los posteos y excluir aquellos que no coinciden uid != id_owner
             const posteosListDb = await Post.find();
             const posteosListDistinctToMine = await posteosListDb.filter(element => element.id_owner != uid);
 
-            //Recorrer la lista de posteos y filtrar por fechas, hacer una nueva lista con aquellos cuya fecha sea igual o mayor a la actual
             let posteosFiltradosPorFechaPromise = [];
             for( const element of posteosListDistinctToMine) {
                 const result = await this.compareDates(element.date);
@@ -73,7 +67,6 @@ class DashboardService {
             }
             const posteosFiltradosPorFecha = await Promise.all(posteosFiltradosPorFechaPromise);
 
-            //Recorrer posteos y filtrar por type requerido
             const posteosListFilterByType = await posteosFiltradosPorFecha.filter(function(element){
                 if(type == "advertising"){
                     if(element.checkbox.advertising == "true"){
@@ -88,7 +81,6 @@ class DashboardService {
                         return element;
                     }
                 } else{
-                    console.log("elemento que NO coincide con el type")
                     response = {
                         exist: false,
                         data: {},
@@ -98,7 +90,6 @@ class DashboardService {
                 }
             });
 
-            //quito los id owner repetidos, asi solo hago las busquedas justas y necesarias a la base
             const listaIdOwnersDeLosPosteos = posteosListFilterByType.filter((value, index, self) =>
                 index === self.findIndex((t) => (
                     t.id_owner === value.id_owner && t.id_owner === value.id_owner
@@ -214,12 +205,9 @@ class DashboardService {
             message: {}
         }
         try{
-            console.log("POSTEO ID --> " +posteoId)
             const posteoDb = await Post.findById(posteoId);
-            console.log("datos del posteo --> " + posteoDb);
             const { id_owner, title, image_url, date, time, street, street_number, description, province, checkbox, like_count } = posteoDb;
             const ownerProfile = await User.findById(id_owner);
-            console.log("datos del owner --> " + ownerProfile);
             const { profile_photo, first_name, last_name, email } = ownerProfile;
 
             const posteoDetails = {
@@ -266,34 +254,22 @@ class DashboardService {
             message: '',
             isLike: false
         };
-        //if(!mongoose.Types.ObjectId.isValid(posteoId)) return `No post with id: ${posteoId}`;
         let isLike = false;
         try {
-            //obtengo el posteo by id
             const posteoDb = await Post.findById(posteoId);
-            console.log("datos del posteo --> " + posteoDb);
-            //verificar si en la lista de likes del posteo se encuentra el uid del usuario y si esta vacia
             const isUserIdInclude = posteoDb.likes.includes(userUid);
-            console.log("incluye el user id? " + isUserIdInclude);
             if(!isUserIdInclude){
-                console.log("EL ID NO ESTA INCLUIDO, entonces lo agregamos");
                 posteoDb.likes.push(userUid);
-                console.log("contador de like antes: "+ posteoDb.like_count)
                 posteoDb.like_count = posteoDb.like_count+1
-                console.log("contador de like despues: "+ posteoDb.like_count)
                 isLike = true;
             }else{
-                console.log("EL ID ESTA INCLUIDO, entonces lo quitamos")
                 posteoDb.likes = posteoDb.likes.filter(function(e) { return e !== userUid });
-                console.log("contador de like antes: "+ posteoDb.like_count)
                 if(posteoDb.like_count > 0){
                     posteoDb.like_count = posteoDb.like_count-1
-                    console.log("contador de like despues: "+ posteoDb.like_count)
                     isLike = false;
                 }
             }
             await Post.findOneAndUpdate({ _id: posteoId }, {likes: posteoDb.likes, like_count:posteoDb.like_count});
-            //una vez que ya actualizo, hago un findbyid y traigo los nuevos datos del posteo, envio el id del posteo, la lista de likes y el contador de likes como respuesta
             const posteoUpdatedDb = await Post.findById(posteoId);
 
 
@@ -322,7 +298,6 @@ class DashboardService {
 
         try { 
             const post = await Post.findById(id);
-            console.log(post.likes.length)
             return post.likes.length
         
         }catch(error){
@@ -333,8 +308,6 @@ class DashboardService {
 
     }
 
-    //TEST PARA ERROR HANDLER
-    //TODO: DELETE AFTER TEST
     async testError(){
         const isValid = true;
 
@@ -386,13 +359,11 @@ class DashboardService {
             const posteosDashboard = await Promise.all(listadoGeneralPosteosPromesa);
 
             const trueFirst = posteosDashboard.sort((a, b) => Number(b.bool) - Number(a.bool));
-            console.log('LISTA ORDENADA BY TRUE VALUES: ', trueFirst);
             postList = {
                 exist: true,
                 data: {trueFirst}
             };
         }catch(error){
-            console.log('Error al obtener datos del usuario desde la db: ', error);
             postList = {
                 exist: false,
                 data: {}
@@ -415,7 +386,6 @@ class DashboardService {
                 case 'advertising':
                     const posteosAdvertising = await Post.find({'checkbox.advertising': 'true'});
                     const posteosAdvertisingCleaned = posteosAdvertising.filter(posteo => JSON.stringify(posteo.id_owner) != JSON.stringify(_id));
-                    console.log(posteosAdvertisingCleaned)
                     posteosList = {
                         exist: true,
                         data: {posteosAdvertisingCleaned},
@@ -481,7 +451,6 @@ class DashboardService {
                     break;
             }
         }catch(error){
-            console.log('Error al buscar los posteos: ', error);
             posteosList = {
                 exist: false,
                 data: {},
@@ -503,10 +472,8 @@ class DashboardService {
             //evitar traerte a vos mismo
             const {_id} = await User.findById(userUid);
             const users = await User.find({user_type: type});
-            console.log('USUARIOS QUE COINCIDEN CON EL MISMO TIPO: ', users);
             if(users != undefined && users.length > 0){
                 const userListCleaned = users.filter(user => JSON.stringify(user._id) != JSON.stringify(_id));
-                console.log('USUARIOS QUE COINCIDEN CON EL MISMO TIPO CLEANED: ', userListCleaned);
                 userList = {
                     exist: true,
                     data: {userListCleaned},
@@ -514,7 +481,6 @@ class DashboardService {
                     message: 'successful search'
                 };
             }else{
-                console.log('Error al obtener usuarios ');    
                 userList = {
                     exist: false,
                     data: {},
@@ -523,7 +489,6 @@ class DashboardService {
                 };
             }
         }catch(error){
-            console.log('Error al buscar los usuarios: ', error);
             userList = {
                 exist: false,
                 data: {},
@@ -570,7 +535,6 @@ class DashboardService {
                     };
                 }
             }catch(error){
-                console.log('Error no se encontro un usuario con ese nombre: ', error);
                 user = {
                     exist: false,
                     data: {},
@@ -578,7 +542,6 @@ class DashboardService {
                 };
             }        
         } else {
-            console.log('Error nombre de usuario incorrecto: ', error);
             user = {
                 exist: false,
                 data: {},
@@ -656,7 +619,6 @@ class DashboardService {
                     })
                  }
              }
-            console.log("resultados -->> ", userMatches);
 
             response = {
                 exist: true,
@@ -665,7 +627,6 @@ class DashboardService {
             };
 
         }catch(error){
-            console.log('Error no encontramos coincidencia: ', error);
             response = {
                 exist: false,
                 data: null,
