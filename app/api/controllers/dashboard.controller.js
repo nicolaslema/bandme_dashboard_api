@@ -29,7 +29,6 @@ const likePost = async(req, res = resposne)=>{
                 });
             }
         } catch(error){
-            console.log('No se pudo autenticar la identidad: ', error);
             return res.status(500).json({
                 message: 'No se pudo autenticar la identidad'
             });
@@ -56,11 +55,9 @@ const likeCount =  async(req, res  =  resposne)=>{
 
 const getFriendsPostController = async(req, res = response) => {
     const token = req.headers['auth-token'];
-    console.log('token recibido desde el body controller: '+token);
-    if(token != undefined) { //if the token comes in the request
+    if(token != undefined) { 
         try{
         const {uid} = await dashboardService.decodeToken(token);
-        console.log('RESULTADO DESDE CONTROLLER: ' + JSON.stringify(uid));
         if(uid != '' && uid != undefined && uid != null){
         const getFriendPosteosList = await dashboardService.getFriendsPostList(uid);
         let response;
@@ -78,14 +75,12 @@ const getFriendsPostController = async(req, res = response) => {
             });
         }
     }else{
-        console.log('No se pudo autenticar la identidad por que el token es incorrecto ');
         return res.status(500).json({
             message: 'No se pudo autenticar la identidad'
         });
     }
         return response;
     } catch(error){
-        console.log('No se pudo autenticar la identidad: ', error);
         return res.status(500).json({
             message: 'No se pudo autenticar la identidad'
         });
@@ -100,11 +95,9 @@ const getFriendsPostController = async(req, res = response) => {
 const findUserByName = async(req, res = response) => {
     const token = req.headers['auth-token'];
     const {username, lastName} = req.body;
-    console.log('token recibido desde el body controller: '+token);
     if(token != undefined) {
         try{
             const {uid} = await dashboardService.decodeToken(token);
-            console.log('RESULTADO DESDE CONTROLLER: ' + JSON.stringify(uid));
             if(uid != '' && uid != undefined && uid != null){
                 const userWanted = await dashboardService.findUserByName(username, lastName, uid);
                 let response;
@@ -122,14 +115,12 @@ const findUserByName = async(req, res = response) => {
                     });
                 }
             }else{
-                console.log('No se pudo autenticar la identidad por que el token es incorrecto ');
                 return res.status(500).json({
                     message: 'No se pudo autenticar la identidad'
                 });
             }
             return response;
         } catch(error){
-            console.log('No se pudo autenticar la identidad: ', error);
             return res.status(500).json({
                 message: 'No se pudo autenticar la identidad'
             });
@@ -144,11 +135,9 @@ const findUserByName = async(req, res = response) => {
 const findUsersByType = async(req, res = response) => {
     const token = req.headers['auth-token'];
     const {type} = req.body;
-    console.log('token recibido desde el body controller: '+token);
     if(token != undefined) {
         try{ 
             const {uid} = await dashboardService.decodeToken(token);
-            console.log('RESULTADO DESDE CONTROLLER: ' + JSON.stringify(uid));
             if(uid != '' && uid != undefined && uid != null){ 
                 const usersList = await dashboardService.findUsersByType(uid, type);
                 let response;
@@ -168,14 +157,12 @@ const findUsersByType = async(req, res = response) => {
                     });
                 }
             }else{
-                console.log('No se pudo autenticar la identidad por que el token es incorrecto ');
                 return res.status(500).json({
                     message: 'No se pudo autenticar la identidad'
                 });
             }
             return response;
         } catch(error){
-            console.log('No se pudo autenticar la identidad: ', error);
             return res.status(500).json({
                 message: 'No se pudo autenticar la identidad'
             });
@@ -190,12 +177,9 @@ const findUsersByType = async(req, res = response) => {
 const findPosteosByType = async(req, res = response) => {
     const token = req.headers['auth-token'];
     const {type, userType} = req.body;
-    console.log('token recibido desde el body controller: '+token);
-    console.log('USERTYPE recibido desde el body controller: '+userType);
     if(token != undefined) {
         try{
             const {uid} = await dashboardService.decodeToken(token);
-            console.log('RESULTADO DESDE CONTROLLER: ' + JSON.stringify(uid));
             if(uid != '' && uid != undefined && uid != null){ 
                 const posteosList = await dashboardService.findPosteosByType(uid, type, userType);
                 let response;
@@ -215,14 +199,12 @@ const findPosteosByType = async(req, res = response) => {
                     });
                 }
             }else{
-                console.log('No se pudo autenticar la identidad por que el token es incorrecto ');
                 return res.status(500).json({
                     message: 'No se pudo autenticar la identidad'
                 });
             }
             return response;
         } catch(error){
-            console.log('No se pudo autenticar la identidad: ', error);
             return res.status(500).json({
                 message: 'No se pudo autenticar la identidad'
             });
@@ -238,7 +220,6 @@ const getPostDetails = async(req, res = response) => {
     const posteoId = req.query.posteoId;
 
     if(posteoId != null && posteoId != undefined && posteoId != ""){
-        console.log('posteoID recibido desde el body controller: '+posteoId);
         try{
             const posteo = await dashboardService.getPosteoById(posteoId);
             let response;
@@ -257,7 +238,6 @@ const getPostDetails = async(req, res = response) => {
             }
         return response;
         } catch(error){
-            console.log('No se pudo encontrar el posteo: ', error);
             return res.status(500).json({
                 message: 'No se pudo encontrar el posteo'
             });
@@ -275,7 +255,6 @@ const validateFriend = async(req, res = response) => {
     if(token != undefined) {
         try{
             const {uid} = await dashboardService.decodeToken(token);
-            console.log('ID FRIEND DESDE CONTROLLER: ' + JSON.stringify(id_friend));
             if(uid != '' && uid != undefined && uid != null){ 
                 const validateUserFriend = await dashboardService.validateFriend(uid, id_friend);
                 let response;
@@ -293,14 +272,12 @@ const validateFriend = async(req, res = response) => {
                     });
                 }
             }else{
-                console.log('No se pudo autenticar la identidad por que el token es incorrecto ');
                 return res.status(500).json({
                     message: 'No se pudo autenticar la identidad'
                 });
             }
             return response;
         } catch(error){
-            console.log('No se pudo autenticar la identidad: ', error);
             return res.status(500).json({
                 message: 'No se pudo autenticar la identidad'
             });
@@ -316,11 +293,9 @@ const findUserByWord = async(req, res = response) => {
     const token = req.headers['auth-token'];
     const {first_name, last_name, user_type, email} = req.body;
 
-    console.log('first name y userType recibido desde el body controller: '+ first_name, user_type);
     if(token != undefined) {
         try{
             const {uid} = await dashboardService.decodeToken(token);
-            console.log('RESULTADO DESDE CONTROLLER: ' + JSON.stringify(uid));
             if(uid != '' && uid != undefined && uid != null){ 
                 const usersMatchesList = await dashboardService.findUserByWord(uid, first_name, last_name, user_type, email);
                 let response;
@@ -338,14 +313,12 @@ const findUserByWord = async(req, res = response) => {
                     });
                 }
             }else{
-                console.log('No se pudo autenticar la identidad por que el token es incorrecto ');
                 return res.status(500).json({
                     message: 'No se pudo autenticar la identidad'
                 });
             }
             return response;
         } catch(error){
-            console.log('No se pudo autenticar la identidad: ', error);
             return res.status(500).json({
                 message: 'No se pudo autenticar la identidad'
             });
@@ -363,11 +336,9 @@ const findPosteByType = async(req, res = response) => {
     const {type} = req.body;
 
     if(type != null && type != undefined && type != ""){
-        console.log('type recibido desde el body controller: '+type);
         if(token != undefined) {
             try{
                 const {uid} = await dashboardService.decodeToken(token);
-                console.log('RESULTADO DESDE CONTROLLER: ' + JSON.stringify(uid));
                 if(uid != '' && uid != undefined && uid != null){ 
                     const posteosList = await dashboardService.findPosteByType(uid, type);
                     let response;
@@ -387,14 +358,12 @@ const findPosteByType = async(req, res = response) => {
                         });
                     }
                 }else{
-                    console.log('No se pudo autenticar la identidad por que el token es incorrecto ');
                     return res.status(500).json({
                         message: 'No se pudo autenticar la identidad'
                     });
                 }
                 return response;
             } catch(error){
-                console.log('No se pudo autenticar la identidad: ', error);
                 return res.status(500).json({
                     message: 'No se pudo autenticar la identidad'
                 });
