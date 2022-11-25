@@ -6,13 +6,21 @@
   "scripts": {
     "dev": "cross-env NODE_ENV=development nodemon --inspect=0.0.0.0:9229 app",
     "start": "node app",
-    "test": "cross-env NODE_ENV=test jest "
+    "test": "mocha --compiler js:babel-register, --timeout=10000",
+    "test:watch": "mocha --watch --compiler js:babel-register, --timeout=10000"
   },
+
+  "pre-commit":[
+    "test"
+  ],
+
   "author": "",
   "license": "ISC",
   "devDependencies": {
+    "chai": "^4.3.7",
     "cross-env": "^7.0.3",
     "jest": "^27.4.7",
+    "mocha": "^10.1.0",
     "nodemon": "^2.0.15",
     "supertest": "^6.2.2"
   },
