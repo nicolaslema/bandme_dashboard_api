@@ -147,7 +147,7 @@ class DashboardService {
             };
 
         }catch(error){
-            console.error(error);
+            console.error("Error catch: ",error);
             response = {
                 exist: false,
                 data: null,
@@ -366,7 +366,7 @@ class DashboardService {
         }catch(error){
             postList = {
                 exist: false,
-                data: {}
+                data: null
             };
         }
 
@@ -453,7 +453,7 @@ class DashboardService {
         }catch(error){
             posteosList = {
                 exist: false,
-                data: {},
+                data: null,
                 message: 'Error al buscar los posteos',
                 size: 0
             };
@@ -537,7 +537,7 @@ class DashboardService {
             }catch(error){
                 user = {
                     exist: false,
-                    data: {},
+                    data: null,
                     message: 'Error no se encontro un usuario con ese nombre'
                 };
             }        
