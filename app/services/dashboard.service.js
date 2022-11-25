@@ -328,6 +328,14 @@ class DashboardService {
             const userProfileDb = await User.findById(userUid);
             const {friend_list} = userProfileDb;
             const listadoGeneralPosteosPromesa = [];
+
+            for( const friend of friend_list) {
+                const friendData = await User.findById(friend._id);
+                const {post_list} = friendData;
+                friend.post_list = post_list
+            }
+
+
             
             for( const friend of friend_list) {
                 for( const idPosteo of friend.post_list ) {
