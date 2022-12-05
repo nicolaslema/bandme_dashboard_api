@@ -19,7 +19,7 @@ class DashboardService {
 
     async decodeToken(userToken){
         try{
-            const {data:response} = await axios.post('https://bandme-login-api.herokuapp.com/api/v1/login/validate/user-identity', {
+            const {data:response} = await axios.post('https://bandme-api-login.up.railway.app/api/v1/login/validate/user-identity', {
             token:userToken
         });
             return response;
